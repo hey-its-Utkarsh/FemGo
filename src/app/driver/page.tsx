@@ -3,18 +3,26 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircleDollarSign, CheckCircle, Car, AlertTriangle, User } from "lucide-react";
+import { CircleDollarSign, CheckCircle, Car, AlertTriangle } from "lucide-react";
 import ridesData from '@/data/rides.json';
 import usersData from '@/data/users.json';
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
 
 const driverId = "driver001"; // Assuming this is the logged-in driver
+const REQUEST_TIMEOUT_SECONDS = 15;
 
-const initialRideRequests = ridesData.filter(ride => ride.rideStatus === 'requested');
+// Define a type for a single ride based on your JSON structure
+type Ride = typeof ridesData[number];
+
+const allRideRequests = ridesData.filter(ride => ride.rideStatus === 'requested');
 const initialCompletedRides = ridesData.filter(ride => ride.driverId === driverId && ride.rideStatus === 'completed');
+
+interface RideRequestWithTimer extends Ride {
+    timeLeft: number;
+}
 
 const getPassengerDetails = (passengerId: string) => {
     const passenger = usersData.find(user => user.id === passengerId);
@@ -23,17 +31,20 @@ const getPassengerDetails = (passengerId: string) => {
 
 export default function DriverDashboard() {
     const [isOnline, setIsOnline] = useState(true);
-    const [rideRequests, setRideRequests] = useState(initialRideRequests);
-    const [completedRides, setCompletedRides] = useState(initialCompletedRides);
+    const [rideRequests, setRideRequests] = useState<RideRequestWithTimer[]>([]);
+    const [completedRides] = useState(initialCompletedRides);
     const totalEarnings = completedRides.reduce((acc, ride) => acc + ride.fare, 0);
     const { toast } = useToast();
     const notificationSoundRef = useRef<HTMLAudioElement>(null);
-    const requestIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const newRequestIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const playNotificationSound = () => {
-        notificationSoundRef.current?.play().catch(error => {
-            console.error("Audio playback failed:", error);
-        });
+        if (rideRequests.length === 0) { // Only start ringing if it wasn't already
+            notificationSoundRef.current?.play().catch(error => {
+                console.error("Audio playback failed:", error);
+            });
+        }
     };
 
     const stopNotificationSound = () => {
@@ -42,10 +53,45 @@ export default function DriverDashboard() {
             notificationSoundRef.current.currentTime = 0;
         }
     };
+    
+    // Countdown timer effect
+    useEffect(() => {
+        if (isOnline && rideRequests.length > 0) {
+            countdownIntervalRef.current = setInterval(() => {
+                setRideRequests(prevRequests => {
+                    const updatedRequests = prevRequests.map(req => ({
+                        ...req,
+                        timeLeft: req.timeLeft - 1,
+                    })).filter(req => req.timeLeft > 0);
+
+                    if (updatedRequests.length < prevRequests.length && updatedRequests.length === 0) {
+                        stopNotificationSound();
+                    }
+                    return updatedRequests;
+                });
+            }, 1000);
+        } else {
+            if (countdownIntervalRef.current) {
+                clearInterval(countdownIntervalRef.current);
+            }
+        }
+
+        return () => {
+            if (countdownIntervalRef.current) {
+                clearInterval(countdownIntervalRef.current);
+            }
+        };
+    }, [isOnline, rideRequests.length]);
+
 
     const handleAcceptRide = (rideId: string) => {
-        stopNotificationSound();
-        setRideRequests(prev => prev.filter(r => r.id !== rideId));
+        setRideRequests(prev => {
+            const remaining = prev.filter(r => r.id !== rideId);
+            if (remaining.length === 0) {
+                stopNotificationSound();
+            }
+            return remaining;
+        });
         toast({
             title: "Ride Accepted!",
             description: "You are now heading to the pickup location.",
@@ -54,34 +100,43 @@ export default function DriverDashboard() {
 
     const simulateNewRequest = () => {
         // Find a request that isn't already in the list
-        const newRequest = initialRideRequests.find(r => !rideRequests.some(current => current.id === r.id));
+        const existingIds = new Set(rideRequests.map(r => r.id));
+        const newRequest = allRideRequests.find(r => !existingIds.has(r.id));
+        
         if (newRequest) {
-            setRideRequests(prev => [newRequest, ...prev]);
+            playNotificationSound();
+            setRideRequests(prev => [...prev, { ...newRequest, timeLeft: REQUEST_TIMEOUT_SECONDS }]);
             const passenger = getPassengerDetails(newRequest.passengerId);
             toast({
                 title: "New Ride Request!",
                 description: `From ${passenger.name}. 2.5 mi away.`,
             });
-            playNotificationSound();
+        } else {
+            // Stop adding new requests if all have been shown
+             if (newRequestIntervalRef.current) {
+                clearInterval(newRequestIntervalRef.current);
+            }
         }
     };
 
     useEffect(() => {
         if (isOnline) {
-            // Initially clear and then show new requests one by one
-            setRideRequests([]);
-            requestIntervalRef.current = setInterval(simulateNewRequest, 8000); // Simulate new request every 8 seconds
+            setRideRequests([]); // Clear old requests on going online
+            // Start the simulation after a short delay
+            setTimeout(() => {
+                simulateNewRequest();
+                newRequestIntervalRef.current = setInterval(simulateNewRequest, 17000); // New request every 17 seconds (15s timer + 2s buffer)
+            }, 1000);
         } else {
             stopNotificationSound();
-            if (requestIntervalRef.current) {
-                clearInterval(requestIntervalRef.current);
-            }
+            if (newRequestIntervalRef.current) clearInterval(newRequestIntervalRef.current);
+            if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+            setRideRequests([]);
         }
         return () => {
             stopNotificationSound();
-            if (requestIntervalRef.current) {
-                clearInterval(requestIntervalRef.current);
-            }
+            if (newRequestIntervalRef.current) clearInterval(newRequestIntervalRef.current);
+            if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOnline]);
@@ -126,8 +181,9 @@ export default function DriverDashboard() {
                     <div className="space-y-4">
                     {rideRequests.map(req => {
                         const passenger = getPassengerDetails(req.passengerId);
+                        const progressPercentage = (req.timeLeft / REQUEST_TIMEOUT_SECONDS) * 100;
                         return (
-                            <Card key={req.id} className="p-4 bg-card border-border">
+                            <Card key={req.id} className="p-4 bg-card border-border space-y-3">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <Avatar>
@@ -141,6 +197,7 @@ export default function DriverDashboard() {
                                     </div>
                                     <Button onClick={() => handleAcceptRide(req.id)}>Accept</Button>
                                 </div>
+                                <Progress value={progressPercentage} className="h-2" />
                             </Card>
                         )
                     })}
@@ -194,5 +251,3 @@ export default function DriverDashboard() {
         </footer>
     </div>
   );
-
-    
