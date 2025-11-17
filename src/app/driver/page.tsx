@@ -3,32 +3,92 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircleDollarSign, CheckCircle, Car, AlertTriangle } from "lucide-react";
+import { CircleDollarSign, CheckCircle, Car, AlertTriangle, User } from "lucide-react";
 import ridesData from '@/data/rides.json';
 import usersData from '@/data/users.json';
+import { useState, useEffect, useRef } from "react";
+import { useToast } from "@/hooks/use-toast";
+import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const driverId = "driver001"; // Assuming this is the logged-in driver
 
-const rideRequests = ridesData.filter(ride => ride.rideStatus === 'requested');
-const completedRides = ridesData.filter(ride => ride.driverId === driverId && ride.rideStatus === 'completed');
+const initialRideRequests = ridesData.filter(ride => ride.rideStatus === 'requested');
+const initialCompletedRides = ridesData.filter(ride => ride.driverId === driverId && ride.rideStatus === 'completed');
 
-const getPassengerName = (passengerId: string) => {
+const getPassengerDetails = (passengerId: string) => {
     const passenger = usersData.find(user => user.id === passengerId);
-    return passenger ? passenger.name : "Unknown Passenger";
+    return passenger || { name: "Unknown Passenger", id: "unknown" };
 };
 
-const totalEarnings = completedRides.reduce((acc, ride) => acc + ride.fare, 0);
-
 export default function DriverDashboard() {
+    const [isOnline, setIsOnline] = useState(true);
+    const [rideRequests, setRideRequests] = useState(initialRideRequests);
+    const [completedRides, setCompletedRides] = useState(initialCompletedRides);
+    const totalEarnings = completedRides.reduce((acc, ride) => acc + ride.fare, 0);
+    const { toast } = useToast();
+    const notificationSoundRef = useRef<HTMLAudioElement>(null);
+    const requestIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    const playNotificationSound = () => {
+        notificationSoundRef.current?.play().catch(error => {
+            console.error("Audio playback failed:", error);
+        });
+    };
+
+    const handleAcceptRide = (rideId: string) => {
+        setRideRequests(prev => prev.filter(r => r.id !== rideId));
+        toast({
+            title: "Ride Accepted!",
+            description: "You are now heading to the pickup location.",
+        });
+    }
+
+    const simulateNewRequest = () => {
+        // Find a request that isn't already in the list
+        const newRequest = initialRideRequests.find(r => !rideRequests.some(current => current.id === r.id));
+        if (newRequest) {
+            setRideRequests(prev => [newRequest, ...prev]);
+            const passenger = getPassengerDetails(newRequest.passengerId);
+            toast({
+                title: "New Ride Request!",
+                description: `From ${passenger.name}. 2.5 mi away.`,
+            });
+            playNotificationSound();
+        }
+    };
+
+    useEffect(() => {
+        if (isOnline) {
+            // Initially clear and then show new requests one by one
+            setRideRequests([]);
+            requestIntervalRef.current = setInterval(simulateNewRequest, 8000); // Simulate new request every 8 seconds
+        } else {
+            if (requestIntervalRef.current) {
+                clearInterval(requestIntervalRef.current);
+            }
+        }
+        return () => {
+            if (requestIntervalRef.current) {
+                clearInterval(requestIntervalRef.current);
+            }
+        };
+    }, [isOnline]);
+
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
+        <audio ref={notificationSoundRef} src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" preload="auto" />
         <header className="p-4 bg-card shadow-md">
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-primary">Welcome, Diana!</h1>
-                    <p className="opacity-90 text-muted-foreground">You are online and ready for rides.</p>
+                    <p className={`opacity-90 ${isOnline ? 'text-green-400' : 'text-muted-foreground'}`}>
+                        {isOnline ? 'You are online and ready for rides.' : 'You are offline.'}
+                    </p>
                 </div>
-                 <Button variant="secondary">Go Offline</Button>
+                 <Button variant={isOnline ? "secondary" : "default"} onClick={() => setIsOnline(!isOnline)}>
+                    {isOnline ? 'Go Offline' : 'Go Online'}
+                 </Button>
             </div>
         </header>
 
@@ -48,38 +108,57 @@ export default function DriverDashboard() {
 
             <Tabs defaultValue="requests" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-muted">
-                    <TabsTrigger value="requests">New Requests</TabsTrigger>
+                    <TabsTrigger value="requests">New Requests ({rideRequests.length})</TabsTrigger>
                     <TabsTrigger value="completed">Completed</TabsTrigger>
                 </TabsList>
                 <TabsContent value="requests" className="mt-4">
                     <div className="space-y-4">
-                    {rideRequests.map(req => (
-                        <Card key={req.id} className="p-4 bg-card border-border">
-                             <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="font-bold text-primary-foreground">{getPassengerName(req.passengerId)}</p>
-                                    <p className="text-sm text-muted-foreground">2.5 mi away</p>
+                    {rideRequests.map(req => {
+                        const passenger = getPassengerDetails(req.passengerId);
+                        return (
+                            <Card key={req.id} className="p-4 bg-card border-border">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <Avatar>
+                                            <AvatarImage src={`https://picsum.photos/seed/${passenger.id}/200/200`} data-ai-hint="woman portrait" />
+                                            <AvatarFallback>{passenger.name.charAt(0)}</AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <p className="font-bold text-primary-foreground">{passenger.name}</p>
+                                            <p className="text-sm text-muted-foreground">2.5 mi away</p>
+                                        </div>
+                                    </div>
+                                    <Button onClick={() => handleAcceptRide(req.id)}>Accept</Button>
                                 </div>
-                                <Button>Accept</Button>
-                             </div>
-                        </Card>
-                    ))}
-                     {rideRequests.length === 0 && <p className="text-center text-muted-foreground py-8">No new ride requests.</p>}
+                            </Card>
+                        )
+                    })}
+                     {isOnline && rideRequests.length === 0 && <p className="text-center text-muted-foreground py-8">Waiting for new ride requests...</p>}
+                     {!isOnline && <p className="text-center text-muted-foreground py-8">Go online to receive requests.</p>}
                     </div>
                 </TabsContent>
                 <TabsContent value="completed" className="mt-4">
                     <div className="space-y-4">
-                    {completedRides.map(ride => (
-                        <Card key={ride.id} className="p-4 bg-card border-border">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                     <p className="font-bold text-primary-foreground">{getPassengerName(ride.passengerId)}</p>
-                                     <p className="text-sm text-muted-foreground">{ride.drop}</p>
+                    {completedRides.map(ride => {
+                        const passenger = getPassengerDetails(ride.passengerId);
+                        return (
+                            <Card key={ride.id} className="p-4 bg-card border-border">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <Avatar>
+                                            <AvatarImage src={`https://picsum.photos/seed/${passenger.id}/200/200`} data-ai-hint="woman portrait" />
+                                            <AvatarFallback>{passenger.name.charAt(0)}</AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <p className="font-bold text-primary-foreground">{passenger.name}</p>
+                                            <p className="text-sm text-muted-foreground">{ride.drop}</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-lg font-semibold text-green-400">${ride.fare.toFixed(2)}</p>
                                 </div>
-                                <p className="text-lg font-semibold text-green-400">${ride.fare.toFixed(2)}</p>
-                             </div>
-                        </Card>
-                    ))}
+                            </Card>
+                        )
+                    })}
                     </div>
                 </TabsContent>
             </Tabs>
@@ -105,3 +184,5 @@ export default function DriverDashboard() {
     </div>
   );
 }
+
+    
