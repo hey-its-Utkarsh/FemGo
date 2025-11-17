@@ -22,6 +22,7 @@ type ActiveRide = Ride & { step: 'pickup' | 'trip' };
 
 const allRideRequests = ridesData.filter(ride => ride.rideStatus === 'requested');
 const initialCompletedRides = ridesData.filter(ride => ride.driverId === driverId && ride.rideStatus === 'completed');
+let usedRequestIndices = new Set<number>();
 
 const getPassengerDetails = (passengerId: string) => {
     const passenger = usersData.find(user => user.id === passengerId);
@@ -55,9 +56,18 @@ export default function DriverDashboard() {
     };
 
     const simulateNewRequest = () => {
-        const existingIds = new Set(rideRequests.map(r => r.id));
-        const newRequest = allRideRequests.find(r => !existingIds.has(r.id) && r.id !== activeRide?.id);
+        if (usedRequestIndices.size >= allRideRequests.length) {
+            usedRequestIndices.clear(); // Reset if all requests have been shown
+        }
+
+        let newRequestIndex;
+        do {
+            newRequestIndex = Math.floor(Math.random() * allRideRequests.length);
+        } while (usedRequestIndices.has(newRequestIndex));
         
+        usedRequestIndices.add(newRequestIndex);
+        const newRequest = allRideRequests[newRequestIndex];
+
         if (newRequest && !activeRide) { // Only add requests if no ride is active
             playNotificationSound();
             setRideRequests(prev => [...prev, { ...newRequest, timeLeft: REQUEST_TIMEOUT_SECONDS }]);
@@ -99,6 +109,7 @@ export default function DriverDashboard() {
     useEffect(() => {
         if (isOnline && !activeRide) {
             setRideRequests([]); // Clear old requests
+            usedRequestIndices = new Set(); // Reset used indices when going online
             setTimeout(() => {
                 simulateNewRequest();
                 newRequestIntervalRef.current = setInterval(simulateNewRequest, 17000);
@@ -179,7 +190,7 @@ export default function DriverDashboard() {
     const passenger = getPassengerDetails(activeRide.passengerId);
     return (
       <div className="relative h-screen w-screen overflow-hidden bg-gray-200">
-        <Image src="https://picsum.photos/seed/drivermap/800/1200" alt="Map to passenger" fill objectFit="cover" className="opacity-20" data-ai-hint="map dark city" />
+        <Image src="https://picsum.photos/seed/drivermap/800/1200" alt="Map to passenger" fill objectFit="cover" className="object-cover opacity-30" data-ai-hint="map dark city" />
         <div className="absolute inset-0 bg-background/40" />
 
         <Card className="absolute bottom-0 left-0 right-0 z-10 rounded-t-3xl border-t-4 border-primary/50 shadow-2xl p-4">
