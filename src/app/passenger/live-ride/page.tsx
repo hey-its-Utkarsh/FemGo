@@ -53,13 +53,14 @@ export default function LiveRidePage() {
       {/* Map Placeholder */}
       <div className="h-full w-full">
         <Image
-          src="https://picsum.photos/seed/livemap/800/1200"
+          src="https://picsum.photos/seed/neonmap/800/1200"
           alt="Live Ride Map"
           fill
           objectFit="cover"
-          data-ai-hint="map satellite view"
+          className="opacity-20"
+          data-ai-hint="map dark city"
         />
-        <div className="absolute inset-0 bg-white/10" />
+        <div className="absolute inset-0 bg-background/50" />
       </div>
 
       {/* Top Info */}

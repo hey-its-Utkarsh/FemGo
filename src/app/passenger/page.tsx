@@ -16,13 +16,14 @@ export default function PassengerDashboard() {
       {/* Map Placeholder */}
       <div className="h-full w-full">
         <Image
-          src="https://picsum.photos/seed/map/800/1200"
+          src="https://picsum.photos/seed/citynight/800/1200"
           alt="Map"
           layout="fill"
           objectFit="cover"
-          data-ai-hint="map view"
+          className="opacity-20"
+          data-ai-hint="map dark city"
         />
-        <div className="absolute inset-0 bg-white/10" />
+        <div className="absolute inset-0 bg-background/50" />
       </div>
 
       {/* Floating Header Actions */}
@@ -69,8 +70,8 @@ export default function PassengerDashboard() {
         <CardFooter className="grid grid-cols-4 gap-1 border-t bg-card p-0">
              <Link href="/passenger/payments" className="w-full">
                 <Button variant="ghost" className="w-full flex-col h-20 rounded-none">
-                    <Wallet className="h-6 w-6 text-gray-500"/>
-                    <span className="text-xs font-normal text-gray-600">Payments</span>
+                    <Wallet className="h-6 w-6 text-muted-foreground"/>
+                    <span className="text-xs font-normal text-muted-foreground">Payments</span>
                 </Button>
              </Link>
              <Link href="/passenger" className="w-full">
@@ -81,14 +82,14 @@ export default function PassengerDashboard() {
              </Link>
              <Link href="/passenger/rides" className="w-full">
                 <Button variant="ghost" className="w-full flex-col h-20 rounded-none">
-                    <History className="h-6 w-6 text-gray-500"/>
-                    <span className="text-xs font-normal text-gray-600">My Rides</span>
+                    <History className="h-6 w-6 text-muted-foreground"/>
+                    <span className="text-xs font-normal text-muted-foreground">My Rides</span>
                 </Button>
              </Link>
              <Link href="/passenger/profile" className="w-full">
                 <Button variant="ghost" className="w-full flex-col h-20 rounded-none">
-                    <User className="h-6 w-6 text-gray-500"/>
-                    <span className="text-xs font-normal text-gray-600">Profile</span>
+                    <User className="h-6 w-6 text-muted-foreground"/>
+                    <span className="text-xs font-normal text-muted-foreground">Profile</span>
                 </Button>
             </Link>
         </CardFooter>

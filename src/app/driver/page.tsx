@@ -179,8 +179,8 @@ export default function DriverDashboard() {
     const passenger = getPassengerDetails(activeRide.passengerId);
     return (
       <div className="relative h-screen w-screen overflow-hidden bg-gray-200">
-        <Image src="https://picsum.photos/seed/drivermap/800/1200" alt="Map to passenger" fill objectFit="cover" data-ai-hint="map satellite view" />
-        <div className="absolute inset-0 bg-black/40" />
+        <Image src="https://picsum.photos/seed/drivermap/800/1200" alt="Map to passenger" fill objectFit="cover" className="opacity-20" data-ai-hint="map dark city" />
+        <div className="absolute inset-0 bg-background/40" />
 
         <Card className="absolute bottom-0 left-0 right-0 z-10 rounded-t-3xl border-t-4 border-primary/50 shadow-2xl p-4">
           <CardHeader className="p-2 text-center">
@@ -359,8 +359,3 @@ export default function DriverDashboard() {
     </div>
   );
 }
-    
-
-    
-
-    
