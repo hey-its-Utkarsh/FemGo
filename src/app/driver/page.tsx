@@ -3,36 +3,35 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircleDollarSign, CheckCircle, Car, AlertTriangle } from "lucide-react";
+import { CircleDollarSign, CheckCircle, Car, AlertTriangle, Phone, MessageSquare, Navigation, Shield, UserX, Check } from "lucide-react";
 import ridesData from '@/data/rides.json';
 import usersData from '@/data/users.json';
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import Image from "next/image";
 
 const driverId = "driver001"; // Assuming this is the logged-in driver
 const REQUEST_TIMEOUT_SECONDS = 15;
 
-// Define a type for a single ride based on your JSON structure
-type Ride = typeof ridesData[number];
+type Ride = (typeof ridesData)[number];
+type RideRequestWithTimer = Ride & { timeLeft: number };
+type ActiveRide = Ride & { step: 'pickup' | 'trip' };
 
 const allRideRequests = ridesData.filter(ride => ride.rideStatus === 'requested');
 const initialCompletedRides = ridesData.filter(ride => ride.driverId === driverId && ride.rideStatus === 'completed');
 
-interface RideRequestWithTimer extends Ride {
-    timeLeft: number;
-}
-
 const getPassengerDetails = (passengerId: string) => {
     const passenger = usersData.find(user => user.id === passengerId);
-    return passenger || { name: "Unknown Passenger", id: "unknown" };
+    return passenger || { name: "Unknown Passenger", id: "unknown", phone: "N/A" };
 };
 
 export default function DriverDashboard() {
     const [isOnline, setIsOnline] = useState(true);
     const [rideRequests, setRideRequests] = useState<RideRequestWithTimer[]>([]);
-    const [completedRides] = useState(initialCompletedRides);
+    const [completedRides, setCompletedRides] = useState(initialCompletedRides);
+    const [activeRide, setActiveRide] = useState<ActiveRide | null>(null);
     const totalEarnings = completedRides.reduce((acc, ride) => acc + ride.fare, 0);
     const { toast } = useToast();
     const notificationSoundRef = useRef<HTMLAudioElement>(null);
@@ -40,7 +39,7 @@ export default function DriverDashboard() {
     const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const playNotificationSound = () => {
-        if (rideRequests.length === 0) { // Only start ringing if it wasn't already
+        if (rideRequests.length === 0) { 
             notificationSoundRef.current?.play().catch(error => {
                 console.error("Audio playback failed:", error);
             });
@@ -53,8 +52,27 @@ export default function DriverDashboard() {
             notificationSoundRef.current.currentTime = 0;
         }
     };
+
+    const simulateNewRequest = () => {
+        const existingIds = new Set(rideRequests.map(r => r.id));
+        const newRequest = allRideRequests.find(r => !existingIds.has(r.id) && r.id !== activeRide?.id);
+        
+        if (newRequest && !activeRide) { // Only add requests if no ride is active
+            playNotificationSound();
+            setRideRequests(prev => [...prev, { ...newRequest, timeLeft: REQUEST_TIMEOUT_SECONDS }]);
+            const passenger = getPassengerDetails(newRequest.passengerId);
+            toast({
+                title: "New Ride Request!",
+                description: `From ${passenger.name}. 2.5 mi away.`,
+            });
+        } else if (rideRequests.length === 0) { // Stop if no new requests are available
+             if (newRequestIntervalRef.current) {
+                clearInterval(newRequestIntervalRef.current);
+            }
+        }
+    };
     
-    // Countdown timer effect
+    // Countdown timer for requests
     useEffect(() => {
         if (isOnline && rideRequests.length > 0) {
             countdownIntervalRef.current = setInterval(() => {
@@ -71,61 +89,18 @@ export default function DriverDashboard() {
                 });
             }, 1000);
         } else {
-            if (countdownIntervalRef.current) {
-                clearInterval(countdownIntervalRef.current);
-            }
+            if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
         }
-
-        return () => {
-            if (countdownIntervalRef.current) {
-                clearInterval(countdownIntervalRef.current);
-            }
-        };
+        return () => { if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current) };
     }, [isOnline, rideRequests.length]);
 
-
-    const handleAcceptRide = (rideId: string) => {
-        setRideRequests(prev => {
-            const remaining = prev.filter(r => r.id !== rideId);
-            if (remaining.length === 0) {
-                stopNotificationSound();
-            }
-            return remaining;
-        });
-        toast({
-            title: "Ride Accepted!",
-            description: "You are now heading to the pickup location.",
-        });
-    }
-
-    const simulateNewRequest = () => {
-        // Find a request that isn't already in the list
-        const existingIds = new Set(rideRequests.map(r => r.id));
-        const newRequest = allRideRequests.find(r => !existingIds.has(r.id));
-        
-        if (newRequest) {
-            playNotificationSound();
-            setRideRequests(prev => [...prev, { ...newRequest, timeLeft: REQUEST_TIMEOUT_SECONDS }]);
-            const passenger = getPassengerDetails(newRequest.passengerId);
-            toast({
-                title: "New Ride Request!",
-                description: `From ${passenger.name}. 2.5 mi away.`,
-            });
-        } else {
-            // Stop adding new requests if all have been shown
-             if (newRequestIntervalRef.current) {
-                clearInterval(newRequestIntervalRef.current);
-            }
-        }
-    };
-
+    // Main simulation loop
     useEffect(() => {
-        if (isOnline) {
-            setRideRequests([]); // Clear old requests on going online
-            // Start the simulation after a short delay
+        if (isOnline && !activeRide) {
+            setRideRequests([]); // Clear old requests
             setTimeout(() => {
                 simulateNewRequest();
-                newRequestIntervalRef.current = setInterval(simulateNewRequest, 17000); // New request every 17 seconds (15s timer + 2s buffer)
+                newRequestIntervalRef.current = setInterval(simulateNewRequest, 17000);
             }, 1000);
         } else {
             stopNotificationSound();
@@ -139,7 +114,97 @@ export default function DriverDashboard() {
             if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOnline]);
+    }, [isOnline, activeRide]);
+
+
+    const handleAcceptRide = (rideId: string) => {
+        const acceptedRide = rideRequests.find(r => r.id === rideId);
+        if (acceptedRide) {
+            setActiveRide({ ...acceptedRide, step: 'pickup' });
+        }
+        setRideRequests([]); // Clear all other requests
+        stopNotificationSound();
+        if (newRequestIntervalRef.current) clearInterval(newRequestIntervalRef.current);
+        toast({
+            title: "Ride Accepted!",
+            description: "Head to the pickup location.",
+        });
+    };
+
+    const handleRideAction = (action: 'arrived' | 'start_trip' | 'end_ride' | 'cancel') => {
+        if (!activeRide) return;
+        
+        if (action === 'arrived') {
+            setActiveRide({ ...activeRide, step: 'trip' });
+            toast({ title: "Arrived at Pickup", description: "Waiting for passenger."});
+        } else if (action === 'start_trip') {
+            toast({ title: "Trip Started", description: `Heading to ${activeRide.drop}.`});
+            // Here you would navigate to a live trip screen. For now, we simulate completion.
+            setTimeout(() => handleRideAction('end_ride'), 5000); // Auto-end after 5s
+        } else if (action === 'end_ride') {
+            toast({ title: "Trip Completed!", description: `Earned $${activeRide.fare.toFixed(2)}` });
+            setCompletedRides(prev => [{...activeRide, rideStatus: 'completed'}, ...prev]);
+            setActiveRide(null); // Return to dashboard
+        } else if (action === 'cancel') {
+            toast({ title: "Ride Cancelled", variant: 'destructive'});
+            setActiveRide(null); // Return to dashboard
+        }
+    };
+
+  if (activeRide) {
+    const passenger = getPassengerDetails(activeRide.passengerId);
+    return (
+      <div className="relative h-screen w-screen overflow-hidden bg-gray-200">
+        <Image src="https://picsum.photos/seed/drivermap/800/1200" alt="Map to passenger" layout="fill" objectFit="cover" data-ai-hint="map satellite view" />
+        <div className="absolute inset-0 bg-black/40" />
+
+        <Card className="absolute bottom-0 left-0 right-0 z-10 rounded-t-3xl border-t-4 border-primary/50 shadow-2xl p-4">
+          <CardHeader className="p-2 text-center">
+            <CardTitle className="text-2xl font-bold text-primary-foreground">
+                {activeRide.step === 'pickup' ? "Head to Pickup" : "Trip to Destination"}
+            </CardTitle>
+            <p className="text-muted-foreground">{activeRide.step === 'pickup' ? activeRide.pickup : activeRide.drop}</p>
+          </CardHeader>
+          <CardContent className="p-2">
+            <div className="flex items-center justify-between p-3 bg-card-foreground/5 rounded-lg">
+                <div className="flex items-center gap-3">
+                    <Avatar className="h-14 w-14">
+                        <AvatarImage src={`https://picsum.photos/seed/${passenger.id}/200/200`} data-ai-hint="woman portrait" />
+                        <AvatarFallback>{passenger.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <p className="text-xl font-bold">{passenger.name}</p>
+                        <p className="text-muted-foreground">{passenger.phone}</p>
+                    </div>
+                </div>
+                 <div className="flex gap-2">
+                    <Button variant="outline" size="icon"><Phone/></Button>
+                    <Button variant="outline" size="icon"><MessageSquare/></Button>
+                </div>
+            </div>
+            
+            <div className="mt-4 grid grid-cols-2 gap-3">
+                {activeRide.step === 'pickup' ? (
+                    <Button size="lg" className="h-16 text-lg col-span-2" onClick={() => handleRideAction('arrived')}>
+                        <Check className="mr-2"/> Arrived at Pickup
+                    </Button>
+                ) : (
+                    <Button size="lg" className="h-16 text-lg col-span-2" onClick={() => handleRideAction('start_trip')}>
+                        <Navigation className="mr-2"/> Start Trip
+                    </Button>
+                )}
+                 <Button variant="destructive" className="h-14" onClick={() => handleRideAction('cancel')}>
+                    <UserX className="mr-2"/> Cancel
+                </Button>
+                <Button variant="secondary" className="h-14">
+                    <Shield className="mr-2"/> SOS
+                </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
@@ -251,3 +316,5 @@ export default function DriverDashboard() {
         </footer>
     </div>
   );
+}
+    
