@@ -1,7 +1,9 @@
+
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { MapPin, Search, Mic, Shield } from "lucide-react";
+import { MapPin, Search, Mic, Shield, Home } from "lucide-react";
+import Link from "next/link";
 
 export default function PassengerDashboard() {
   return (
@@ -37,11 +39,18 @@ export default function PassengerDashboard() {
         </div>
       </Card>
       
-       {/* Floating SOS button */}
+       {/* Floating Action buttons */}
       <div className="absolute top-4 right-4 z-10">
         <Button size="icon" variant="destructive" className="rounded-full w-16 h-16 shadow-lg">
             <Shield size={32} />
         </Button>
+      </div>
+       <div className="absolute top-4 left-4 z-10">
+        <Link href="/">
+          <Button size="icon" variant="secondary" className="rounded-full w-16 h-16 shadow-lg">
+              <Home size={32} />
+          </Button>
+        </Link>
       </div>
     </div>
   );
