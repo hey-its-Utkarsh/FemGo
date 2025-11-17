@@ -320,14 +320,12 @@ export default function DriverDashboard() {
                         <span>Home</span>
                     </Button>
                 </Link>
-                 <Tabs defaultValue="completed">
-                    <TabsTrigger value="completed" asChild>
-                        <Button variant="ghost" className="flex-col h-16 w-full text-muted-foreground">
-                            <CheckCircle/>
-                            <span>Rides</span>
-                        </Button>
-                    </TabsTrigger>
-                </Tabs>
+                <Link href="#completed" passHref>
+                    <Button variant="ghost" className="flex-col h-16 w-full text-muted-foreground">
+                        <CheckCircle/>
+                        <span>Rides</span>
+                    </Button>
+                </Link>
                 <Link href="/driver/safety" passHref>
                     <Button variant="ghost" className="flex-col h-16 w-full text-red-500">
                         <AlertTriangle/>
