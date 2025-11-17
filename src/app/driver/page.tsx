@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircleDollarSign, CheckCircle, Car, AlertTriangle, Phone, MessageSquare, Navigation, Shield, UserX, Check } from "lucide-react";
+import { CircleDollarSign, CheckCircle, Car, AlertTriangle, Phone, MessageSquare, Navigation, Shield, UserX, Check, X } from "lucide-react";
 import ridesData from '@/data/rides.json';
 import usersData from '@/data/users.json';
 import { useState, useEffect, useRef } from "react";
@@ -129,6 +129,21 @@ export default function DriverDashboard() {
         toast({
             title: "Ride Accepted!",
             description: "Head to the pickup location.",
+        });
+    };
+    
+    const handleDeclineRide = (rideId: string) => {
+        setRideRequests(prev => {
+            const updatedRequests = prev.filter(r => r.id !== rideId);
+            if (updatedRequests.length === 0) {
+                stopNotificationSound();
+            }
+            return updatedRequests;
+        });
+        toast({
+            title: "Ride Declined",
+            description: "The request has been removed.",
+            variant: "destructive"
         });
     };
 
@@ -271,9 +286,16 @@ export default function DriverDashboard() {
                                             <p className="text-sm text-muted-foreground">2.5 mi away</p>
                                         </div>
                                     </div>
-                                    <div className="text-right">
+                                    <div className="text-right space-y-2">
                                         <p className="text-lg font-bold text-primary">${req.fare.toFixed(2)}</p>
-                                        <Button onClick={() => handleAcceptRide(req.id)} size="sm">Accept</Button>
+                                        <div className="flex gap-2">
+                                            <Button onClick={() => handleDeclineRide(req.id)} size="sm" variant="destructive">
+                                                <X className="h-4 w-4"/>
+                                            </Button>
+                                            <Button onClick={() => handleAcceptRide(req.id)} size="sm" className="flex-grow">
+                                                Accept
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                                 <Progress value={progressPercentage} className="h-2" />
@@ -337,6 +359,8 @@ export default function DriverDashboard() {
     </div>
   );
 }
+    
+
     
 
     
