@@ -12,14 +12,14 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center bg-background">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Female Voice Verification</CardTitle>
+            <CardTitle className="text-2xl">Female Voice & Image Verification</CardTitle>
             <CardDescription>
-              To ensure the safety of our community, we need to verify your voice.
+              To ensure the safety of our community, we need to verify your voice and image.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-4">
             <p className="text-sm text-muted-foreground text-center">
-              You will be asked to read a short phrase. This is a simulated step for project demonstration.
+              You will be asked to read a short phrase and take a photo. This is a simulated process for project demonstration.
             </p>
             <Button asChild className="w-full">
               <Link href="/verify">Start Verification</Link>
