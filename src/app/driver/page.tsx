@@ -36,7 +36,15 @@ export default function DriverDashboard() {
         });
     };
 
+    const stopNotificationSound = () => {
+        if (notificationSoundRef.current) {
+            notificationSoundRef.current.pause();
+            notificationSoundRef.current.currentTime = 0;
+        }
+    };
+
     const handleAcceptRide = (rideId: string) => {
+        stopNotificationSound();
         setRideRequests(prev => prev.filter(r => r.id !== rideId));
         toast({
             title: "Ride Accepted!",
@@ -64,6 +72,7 @@ export default function DriverDashboard() {
             setRideRequests([]);
             requestIntervalRef.current = setInterval(simulateNewRequest, 8000); // Simulate new request every 8 seconds
         } else {
+            stopNotificationSound();
             if (requestIntervalRef.current) {
                 clearInterval(requestIntervalRef.current);
             }
@@ -73,11 +82,12 @@ export default function DriverDashboard() {
                 clearInterval(requestIntervalRef.current);
             }
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOnline]);
 
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
-        <audio ref={notificationSoundRef} src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" preload="auto" />
+        <audio ref={notificationSoundRef} src="https://assets.mixkit.co/sfx/preview/mixkit-classic-office-phone-ring-435.mp3" preload="auto" loop />
         <header className="p-4 bg-card shadow-md">
             <div className="flex justify-between items-center">
                 <div>
@@ -183,6 +193,5 @@ export default function DriverDashboard() {
         </footer>
     </div>
   );
-}
 
     
