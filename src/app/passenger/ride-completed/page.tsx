@@ -8,10 +8,12 @@ import { Star } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import drivers from '@/data/drivers.json';
 
 export default function RideCompletedPage() {
     const router = useRouter();
     const [rating, setRating] = useState(0);
+    const driver = drivers[0];
 
     return (
         <div className="flex flex-col min-h-screen bg-background">
@@ -20,7 +22,7 @@ export default function RideCompletedPage() {
                 <Card className="w-full max-w-sm">
                     <CardContent className="p-6">
                         <Image
-                            src="https://i.pravatar.cc/150?u=driver001"
+                            src={`https://i.pravatar.cc/150?u=${driver.id}`}
                             alt="Driver"
                             width={96}
                             height={96}
@@ -28,7 +30,7 @@ export default function RideCompletedPage() {
                             data-ai-hint="woman portrait"
                         />
                         <h1 className="text-2xl font-bold mt-4">Rate Your Driver</h1>
-                        <p className="text-muted-foreground">Diana Miller</p>
+                        <p className="text-muted-foreground">{driver.name}</p>
 
                         <div className="flex justify-center gap-2 mt-4">
                             {[1, 2, 3, 4, 5].map((star) => (
@@ -51,3 +53,5 @@ export default function RideCompletedPage() {
         </div>
     )
 }
+
+    

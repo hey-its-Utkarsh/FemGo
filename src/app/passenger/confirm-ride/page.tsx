@@ -26,7 +26,7 @@ export default function ConfirmRidePage() {
                     <CardContent className="p-4">
                         <div className="flex items-center gap-4">
                             <Image
-                                src="https://i.pravatar.cc/150?u=driver001"
+                                src={`https://i.pravatar.cc/150?u=${driver.id}`}
                                 alt={driver.name}
                                 width={80}
                                 height={80}
@@ -67,3 +67,5 @@ export default function ConfirmRidePage() {
         </div>
     );
 }
+
+    

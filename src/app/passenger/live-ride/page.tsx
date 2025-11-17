@@ -10,11 +10,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { dummySpeechSafety } from '@/lib/ai-simulation';
 import { useToast } from "@/hooks/use-toast";
+import drivers from '@/data/drivers.json';
 
 export default function LiveRidePage() {
     const router = useRouter();
     const { toast } = useToast();
     const [progress, setProgress] = useState(10);
+    const driver = drivers[0];
 
     useEffect(() => {
         // Simulate ride progress
@@ -77,7 +79,7 @@ export default function LiveRidePage() {
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
                 <Image
-                    src="https://i.pravatar.cc/150?u=driver001"
+                    src={`https://i.pravatar.cc/150?u=${driver.id}`}
                     alt="Driver"
                     width={60}
                     height={60}
@@ -85,16 +87,16 @@ export default function LiveRidePage() {
                     data-ai-hint="woman portrait"
                 />
                 <div>
-                    <p className="font-bold text-lg">Diana Miller</p>
+                    <p className="font-bold text-lg">{driver.name}</p>
                     <div className="flex items-center gap-1 text-sm">
                         <Star className="w-4 h-4 text-yellow-500 fill-yellow-500"/>
-                        <span>4.9</span>
+                        <span>{driver.rating}</span>
                     </div>
                 </div>
             </div>
             <div>
-                 <p className="font-bold text-lg text-primary">PK-123-XYZ</p>
-                 <p className="text-sm text-right text-muted-foreground">Toyota Prius</p>
+                 <p className="font-bold text-lg text-primary">{driver.vehicle.split(' - ')[1]}</p>
+                 <p className="text-sm text-right text-muted-foreground">{driver.vehicle.split(' - ')[0]}</p>
             </div>
         </div>
 
@@ -123,3 +125,5 @@ export default function LiveRidePage() {
     </div>
   );
 }
+
+    
