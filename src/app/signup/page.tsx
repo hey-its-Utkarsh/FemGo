@@ -2,7 +2,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Mic, Camera, Loader2, ShieldCheck, ShieldX } from 'lucide-react';
+import { Mic, Camera, Loader2, ShieldCheck, ShieldX, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -11,30 +11,38 @@ import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { dummySpeechSafety, dummyFaceVerification } from '@/lib/ai-simulation';
 import MobileHeader from '@/components/femgo/layout/MobileHeader';
 import Link from 'next/link';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
-type VerificationStep = 'voice' | 'face' | 'verifying' | 'complete' | 'failed';
+type SignupStep = 'details' | 'voice' | 'face' | 'verifying' | 'complete' | 'failed';
 
 export default function SignupPage() {
-  const [step, setStep] = useState<VerificationStep>('voice');
+  const [step, setStep] = useState<SignupStep>('details');
   const [progress, setProgress] = useState(0);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
   const { toast } = useToast();
 
-  // Step 1: Voice recording simulation
+  const handleDetailsSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setProgress(25);
+    setStep('voice');
+  };
+
+  // Step 2: Voice recording simulation
   const handleVoiceStart = () => {
     setStep('verifying');
-    setProgress(10);
+    setProgress(35);
     const interval = setInterval(() => {
-      setProgress(p => (p < 40 ? p + 5 : 40));
+      setProgress(p => (p < 50 ? p + 5 : 50));
     }, 200);
 
     setTimeout(async () => {
       clearInterval(interval);
       const result: any = await dummySpeechSafety(null);
-      if (!result.detected) { // Assuming not detected means safe to proceed for this context
-        setProgress(50);
+      if (!result.detected) { // Assuming not detected means safe to proceed
+        setProgress(60);
         setStep('face');
       } else {
         toast({
@@ -47,7 +55,7 @@ export default function SignupPage() {
     }, 3000);
   };
 
-  // Step 2: Request camera permission
+  // Step 3: Request camera permission
   useEffect(() => {
     if (step === 'face') {
       const getCameraPermission = async () => {
@@ -57,7 +65,7 @@ export default function SignupPage() {
           if (videoRef.current) {
             videoRef.current.srcObject = stream;
           }
-          setProgress(60);
+          setProgress(75);
         } catch (error) {
           console.error('Error accessing camera:', error);
           setHasCameraPermission(false);
@@ -73,7 +81,7 @@ export default function SignupPage() {
   }, [step, toast]);
 
 
-  // Step 3: Face capture and verification
+  // Step 4: Face capture and verification
   const handleFaceCapture = async () => {
     setStep('verifying');
     const interval = setInterval(() => {
@@ -103,15 +111,45 @@ export default function SignupPage() {
         stream.getTracks().forEach(track => track.stop());
     }
   };
+
+  const handleReset = () => {
+    setProgress(0);
+    setStep('details');
+  };
   
   const renderStepContent = () => {
     switch (step) {
+      case 'details':
+        return (
+          <>
+            <CardTitle>Step 1: Your Details</CardTitle>
+            <CardDescription>Create your account to get started.</CardDescription>
+            <form onSubmit={handleDetailsSubmit} className="flex flex-col gap-4 pt-4 text-left">
+                <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input id="name" type="text" placeholder="Jane Doe" required />
+                </div>
+                <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input id="email" type="email" placeholder="you@example.com" required />
+                </div>
+                <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="password">Password</Label>
+                    <Input id="password" type="password" placeholder="••••••••" required />
+                </div>
+                <Button type="submit" size="lg" className="w-full">
+                    Continue to Verification
+                </Button>
+            </form>
+          </>
+        );
       case 'voice':
         return (
           <>
-            <CardTitle>Step 1: Voice Verification</CardTitle>
-            <CardDescription>Press the button and say "My voice is my password".</CardDescription>
-            <div className="py-8 flex justify-center">
+            <CardTitle>Step 2: Voice Verification</CardTitle>
+            <CardDescription className='pt-2'>Press the button and clearly say:</CardDescription>
+            <p className='text-lg font-semibold text-primary py-4'>"My voice is my password"</p>
+            <div className="py-4 flex justify-center">
               <Button size="icon" className="w-24 h-24 rounded-full bg-primary hover:bg-primary/90" onClick={handleVoiceStart}>
                 <Mic size={48} />
               </Button>
@@ -121,7 +159,7 @@ export default function SignupPage() {
       case 'face':
         return (
             <>
-                <CardTitle>Step 2: Gender Recognition</CardTitle>
+                <CardTitle>Step 3: Gender Recognition</CardTitle>
                 <CardDescription>Position your face in the frame to complete signup.</CardDescription>
                 <div className="py-4 aspect-video w-full rounded-md bg-muted overflow-hidden flex items-center justify-center">
                     <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted />
@@ -168,7 +206,7 @@ export default function SignupPage() {
               <div className="py-8 flex justify-center text-destructive">
                 <ShieldX size={80} />
               </div>
-              <Button onClick={() => { setProgress(0); setStep('voice'); }} className="w-full">Try Again</Button>
+              <Button onClick={handleReset} className="w-full">Try Again</Button>
             </>
           );
     }
@@ -183,7 +221,7 @@ export default function SignupPage() {
                 {renderStepContent()}
             </CardHeader>
             <CardContent>
-                {step !== 'complete' && <Progress value={progress} className="w-full" />}
+                <Progress value={progress} className="w-full" />
                 <p className="text-center text-sm text-muted-foreground mt-4">
                     Already have an account?{' '}
                     <Link href="/login" className="font-semibold text-primary hover:underline">
