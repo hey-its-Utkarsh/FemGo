@@ -260,7 +260,10 @@ export default function DriverDashboard() {
                                             <p className="text-sm text-muted-foreground">2.5 mi away</p>
                                         </div>
                                     </div>
-                                    <Button onClick={() => handleAcceptRide(req.id)}>Accept</Button>
+                                    <div className="text-right">
+                                        <p className="text-lg font-bold text-primary">${req.fare.toFixed(2)}</p>
+                                        <Button onClick={() => handleAcceptRide(req.id)} size="sm">Accept</Button>
+                                    </div>
                                 </div>
                                 <Progress value={progressPercentage} className="h-2" />
                             </Card>
