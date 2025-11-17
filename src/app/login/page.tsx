@@ -12,8 +12,8 @@ export default function LoginPage() {
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        // Simulate OTP verification and redirect
-        router.push('/passenger');
+        // Redirect to the new verification flow instead of directly to the passenger dashboard
+        router.push('/verify');
     }
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 md:bg-background">
@@ -23,9 +23,9 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md border-0 md:border shadow-none md:shadow-lg">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold text-primary">Welcome Back</CardTitle>
+            <CardTitle className="text-3xl font-bold text-primary">Verification Required</CardTitle>
             <CardDescription>
-              Enter your phone number to login.
+              For your safety, we need to verify your identity. Please enter your phone number to begin.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -34,7 +34,7 @@ export default function LoginPage() {
                     <Label htmlFor="phone">Phone Number</Label>
                     <Input id="phone" type="tel" placeholder="+1 (555) 000-0000" defaultValue="+15551234567" />
                 </div>
-                <Button type="submit" size="lg" className="w-full text-lg py-6">Send OTP</Button>
+                <Button type="submit" size="lg" className="w-full text-lg py-6">Start Verification</Button>
                 <p className="text-center text-sm text-muted-foreground">
                     We'll send a One-Time Password to your number. <br/> (This is a dummy flow, just click the button).
                 </p>
