@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -54,8 +55,8 @@ export default function Header({ appName }: { appName?: string }) {
                         <LogIn className="mr-2" /> Login
                     </Link>
                 </Button>
-                <Button>
-                    Sign Up
+                <Button asChild>
+                    <Link href="/signup">Sign Up</Link>
                 </Button>
             </div>
             <Sheet>
