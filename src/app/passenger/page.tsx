@@ -44,7 +44,7 @@ export default function PassengerDashboard() {
       {/* Bottom Sheet */}
       <Card className="absolute bottom-0 left-0 right-0 z-10 rounded-t-3xl border-t-4 border-primary/50 shadow-2xl">
         <div className="p-6 space-y-4">
-          <p className="text-center text-2xl font-bold text-gray-800">Where to?</p>
+          <p className="text-center text-2xl font-bold text-foreground">Where to?</p>
           
           <div className="relative" onClick={() => router.push('/passenger/request-ride')}>
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -66,7 +66,7 @@ export default function PassengerDashboard() {
           </div>
         </div>
 
-        <CardFooter className="grid grid-cols-4 gap-1 border-t bg-gray-50 p-0">
+        <CardFooter className="grid grid-cols-4 gap-1 border-t bg-card p-0">
              <Link href="/passenger/payments" className="w-full">
                 <Button variant="ghost" className="w-full flex-col h-20 rounded-none">
                     <Wallet className="h-6 w-6 text-gray-500"/>

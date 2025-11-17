@@ -13,7 +13,7 @@ export default function ProfilePage() {
     const user = users[0];
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50">
+        <div className="flex flex-col min-h-screen bg-background">
             <MobileHeader title="Profile" backPath="/passenger" />
             <main className="flex-1 p-4">
                 <Card className="w-full text-center p-6">

@@ -14,7 +14,7 @@ export default function RideCompletedPage() {
     const [rating, setRating] = useState(0);
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50">
+        <div className="flex flex-col min-h-screen bg-background">
             <MobileHeader title="Ride Completed" backPath="/passenger" />
             <main className="flex-1 p-4 flex flex-col items-center justify-center text-center">
                 <Card className="w-full max-w-sm">

@@ -20,15 +20,15 @@ export default function DriverSafetyPage() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50">
+        <div className="flex flex-col min-h-screen bg-background">
             <MobileHeader title="Safety Center" backPath="/driver" />
             <main className="flex-1 p-4 text-center">
-                <Card className={`p-6 transition-all duration-300 ${sosState === 'sent' ? 'bg-green-50 border-green-500' : 'bg-red-50 border-destructive'}`}>
+                <Card className={`p-6 transition-all duration-300 ${sosState === 'sent' ? 'bg-green-50 dark:bg-green-900/20 border-green-500' : 'bg-red-50 dark:bg-red-900/20 border-destructive'}`}>
                     {sosState === 'idle' && <ShieldAlert className="w-16 h-16 text-destructive mx-auto" />}
                     {sosState === 'sending' && <Loader2 className="w-16 h-16 text-destructive mx-auto animate-spin" />}
                     {sosState === 'sent' && <CheckCircle className="w-16 h-16 text-green-600 mx-auto" />}
                     
-                    <h1 className={`text-2xl font-bold mt-4 ${sosState === 'sent' ? 'text-green-700' : 'text-destructive'}`}>
+                    <h1 className={`text-2xl font-bold mt-4 ${sosState === 'sent' ? 'text-green-700 dark:text-green-400' : 'text-destructive'}`}>
                         {sosState === 'idle' && "Emergency - SOS"}
                         {sosState === 'sending' && "Sending Alert..."}
                         {sosState === 'sent' && "Alert Sent!"}

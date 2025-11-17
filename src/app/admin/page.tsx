@@ -23,16 +23,16 @@ const menuItems = [
 
 export default function AdminDashboard() {
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100 dark:bg-background">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md flex-col hidden md:flex">
+      <aside className="w-64 bg-white dark:bg-card shadow-md flex-col hidden md:flex">
         <div className="h-20 flex items-center justify-center border-b">
           <Link href="/" className="text-2xl font-bold text-primary">FemGo Admin</Link>
         </div>
         <nav className="flex-1 p-4 space-y-2">
             {menuItems.map(item => (
                 <Link key={item.href} href={item.href}>
-                    <span className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-600 transition-all hover:bg-accent hover:text-primary">
+                    <span className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-600 dark:text-muted-foreground transition-all hover:bg-accent hover:text-primary">
                         <item.icon className="h-5 w-5" />
                         {item.title}
                     </span>
@@ -41,7 +41,7 @@ export default function AdminDashboard() {
         </nav>
         <div className="p-4 border-t">
             <Link href="/admin/settings">
-                 <span className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-600 transition-all hover:bg-accent hover:text-primary">
+                 <span className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-600 dark:text-muted-foreground transition-all hover:bg-accent hover:text-primary">
                     <Settings className="h-5 w-5" />
                     Settings
                 </span>
@@ -57,20 +57,20 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <header className="h-20 flex items-center justify-between bg-white shadow-sm px-8">
-            <h2 className="text-2xl font-semibold">Dashboard Overview</h2>
+        <header className="h-20 flex items-center justify-between bg-white dark:bg-card shadow-sm px-8">
+            <h2 className="text-2xl font-semibold text-foreground">Dashboard Overview</h2>
             {/* Add user menu or search here */}
         </header>
-        <main className="flex-1 p-8 bg-gray-50">
+        <main className="flex-1 p-8 bg-gray-50 dark:bg-background">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                 {stats.map(stat => (
                     <Card key={stat.title}>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium text-gray-500">{stat.title}</CardTitle>
+                            <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
                             <stat.icon className={`h-5 w-5 ${stat.color}`} />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-bold">{stat.value}</div>
+                            <div className="text-3xl font-bold text-foreground">{stat.value}</div>
                         </CardContent>
                     </Card>
                 ))}

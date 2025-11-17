@@ -23,15 +23,15 @@ export default function FemGoHome() {
               data-ai-hint="woman car driving"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent" />
-            <div className="absolute inset-0 bg-white/40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+            <div className="absolute inset-0 bg-background/40" />
           </div>
           <div className="container relative z-10 text-center">
             <div className="mx-auto max-w-3xl">
-              <h1 className="font-headline text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+              <h1 className="font-headline text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
                 Safe Rides, <span className="text-primary">Empowered Journeys</span>.
               </h1>
-              <p className="mt-6 text-lg leading-8 text-gray-700">
+              <p className="mt-6 text-lg leading-8 text-foreground/80">
                 Welcome to FemGo, the ride-sharing platform designed for women, by women. Experience safety, comfort, and empowerment on every ride.
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
@@ -47,10 +47,10 @@ export default function FemGoHome() {
         </section>
 
         {/* Portals Section */}
-        <section id="portals" className="py-20 sm:py-24">
+        <section id="portals" className="py-20 sm:py-24 bg-background">
           <div className="container">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="font-headline text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              <h2 className="font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 Choose Your Role
               </h2>
               <p className="mt-4 text-lg text-muted-foreground">
@@ -58,7 +58,7 @@ export default function FemGoHome() {
               </p>
             </div>
             <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
-              <div className="flex flex-col items-center text-center p-8 border rounded-lg shadow-lg hover:shadow-primary/20 transition-shadow">
+              <div className="flex flex-col items-center text-center p-8 border rounded-lg shadow-lg bg-card hover:shadow-primary/20 transition-shadow">
                 <Users className="h-12 w-12 text-primary mb-4" />
                 <h3 className="text-2xl font-bold">Passenger</h3>
                 <p className="mt-2 text-base text-muted-foreground">Request safe and reliable rides with verified female drivers.</p>
@@ -66,16 +66,16 @@ export default function FemGoHome() {
                   <Link href="/login">Passenger Dashboard</Link>
                 </Button>
               </div>
-              <div className="flex flex-col items-center text-center p-8 border rounded-lg shadow-lg hover:shadow-secondary/20 transition-shadow">
-                <Car className="h-12 w-12 text-secondary mb-4" />
+              <div className="flex flex-col items-center text-center p-8 border rounded-lg shadow-lg bg-card hover:shadow-secondary/20 transition-shadow">
+                <Car className="h-12 w-12 text-primary mb-4" />
                 <h3 className="text-2xl font-bold">Driver</h3>
                 <p className="mt-2 text-base text-muted-foreground">Join our community of female drivers and earn on your own schedule.</p>
                 <Button asChild variant="secondary" className="mt-6">
                   <Link href="/login">Driver Dashboard</Link>
                 </Button>
               </div>
-              <div className="flex flex-col items-center text-center p-8 border rounded-lg shadow-lg hover:shadow-accent-foreground/20 transition-shadow">
-                <UserCog className="h-12 w-12 text-accent-foreground mb-4" />
+              <div className="flex flex-col items-center text-center p-8 border rounded-lg shadow-lg bg-card hover:shadow-accent/20 transition-shadow">
+                <UserCog className="h-12 w-12 text-primary mb-4" />
                 <h3 className="text-2xl font-bold">Admin</h3>
                 <p className="mt-2 text-base text-muted-foreground">Manage operations, ensure safety, and oversee the platform.</p>
                 <Button asChild variant="outline" className="mt-6">
@@ -86,7 +86,7 @@ export default function FemGoHome() {
           </div>
         </section>
       </main>
-      <footer className="border-t bg-background">
+      <footer className="border-t bg-card">
         <div className="container py-6 text-center text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} FemGo. All rights reserved.</p>
         </div>

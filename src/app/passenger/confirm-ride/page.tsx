@@ -20,7 +20,7 @@ export default function ConfirmRidePage() {
     return (
         <div className="flex flex-col min-h-screen bg-background">
             <MobileHeader title="Driver Found!" showHomeButton={false} />
-            <main className="flex-1 flex flex-col items-center justify-center p-4 text-center bg-gray-50">
+            <main className="flex-1 flex flex-col items-center justify-center p-4 text-center bg-background">
                 <h1 className="text-2xl font-bold">Your driver is on the way!</h1>
                 <Card className="w-full max-w-sm mt-6 text-left">
                     <CardContent className="p-4">

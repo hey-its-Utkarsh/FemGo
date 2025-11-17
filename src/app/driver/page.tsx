@@ -184,7 +184,7 @@ export default function DriverDashboard() {
 
         <Card className="absolute bottom-0 left-0 right-0 z-10 rounded-t-3xl border-t-4 border-primary/50 shadow-2xl p-4">
           <CardHeader className="p-2 text-center">
-            <CardTitle className="text-2xl font-bold text-primary-foreground">
+            <CardTitle className="text-2xl font-bold">
                 {activeRide.step === 'pickup' ? "Head to Pickup" : "Trip to Destination"}
             </CardTitle>
             <p className="text-muted-foreground">{activeRide.step === 'pickup' ? activeRide.pickup : activeRide.drop}</p>
@@ -239,7 +239,7 @@ export default function DriverDashboard() {
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-primary">Welcome, Diana!</h1>
-                    <p className={`opacity-90 ${isOnline ? 'text-green-400' : 'text-muted-foreground'}`}>
+                    <p className={`opacity-90 ${isOnline ? 'text-green-500' : 'text-muted-foreground'}`}>
                         {isOnline ? 'You are online and ready for rides.' : 'You are offline.'}
                     </p>
                 </div>
@@ -252,7 +252,7 @@ export default function DriverDashboard() {
         <main className="flex-1 p-4 overflow-y-auto">
             <Card className="mb-4 bg-card border-border">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-xl text-primary-foreground">
+                    <CardTitle className="flex items-center gap-2 text-xl text-card-foreground">
                         <CircleDollarSign/>
                         Today's Earnings
                     </CardTitle>
@@ -282,7 +282,7 @@ export default function DriverDashboard() {
                                             <AvatarFallback>{passenger.name.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <p className="font-bold text-primary-foreground">{passenger.name}</p>
+                                            <p className="font-bold text-card-foreground">{passenger.name}</p>
                                             <p className="text-sm text-muted-foreground">2.5 mi away</p>
                                         </div>
                                     </div>
@@ -319,11 +319,11 @@ export default function DriverDashboard() {
                                             <AvatarFallback>{passenger.name.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <p className="font-bold text-primary-foreground">{passenger.name}</p>
+                                            <p className="font-bold text-card-foreground">{passenger.name}</p>
                                             <p className="text-sm text-muted-foreground">{ride.drop}</p>
                                         </div>
                                     </div>
-                                    <p className="text-lg font-semibold text-green-400">${ride.fare.toFixed(2)}</p>
+                                    <p className="text-lg font-semibold text-green-500">${ride.fare.toFixed(2)}</p>
                                 </div>
                             </Card>
                         )

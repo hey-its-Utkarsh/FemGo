@@ -17,7 +17,7 @@ export default function FindingDriverPage() {
     }, [router]);
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50">
+        <div className="flex flex-col min-h-screen bg-background">
             <MobileHeader title="Finding Your Driver" backPath="/passenger/request-ride" />
             <main className="flex-1 flex flex-col items-center justify-center p-4 text-center">
                 <div className="relative flex items-center justify-center">

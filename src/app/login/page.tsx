@@ -33,7 +33,7 @@ export default function LoginPage() {
         }
     }
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 md:bg-background">
+    <div className="flex flex-col min-h-screen bg-background">
       <div className='md:hidden'>
         <MobileHeader title="Login" backPath="/" />
       </div>

@@ -8,10 +8,10 @@ import Link from "next/link";
 
 export default function SafetyCenterPage() {
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50">
+        <div className="flex flex-col min-h-screen bg-background">
             <MobileHeader title="Safety Center" backPath="/passenger" />
             <main className="flex-1 p-4 text-center">
-                <Card className="p-6 bg-red-50 border-destructive">
+                <Card className="p-6 bg-red-50 dark:bg-red-900/20 border-destructive">
                     <ShieldAlert className="w-16 h-16 text-destructive mx-auto" />
                     <h1 className="text-2xl font-bold mt-4 text-destructive">Emergency - SOS</h1>
                     <p className="text-muted-foreground mt-2">Press the button below to immediately alert your emergency contacts and our safety team.</p>

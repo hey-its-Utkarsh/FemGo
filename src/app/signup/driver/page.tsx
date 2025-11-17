@@ -225,7 +225,7 @@ export default function DriverSignupPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 md:bg-background">
+    <div className="flex flex-col min-h-screen bg-background">
       <MobileHeader title="Driver Signup" backPath="/signup" />
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">

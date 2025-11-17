@@ -8,7 +8,7 @@ import MobileHeader from '@/components/femgo/layout/MobileHeader';
 
 export default function SignupPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 md:bg-background">
+    <div className="flex flex-col min-h-screen bg-background">
       <MobileHeader title="Choose Your Role" backPath="/" />
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
@@ -27,7 +27,7 @@ export default function SignupPage() {
             </Link>
             <Link href="/signup/driver" passHref>
                 <Button variant="outline" className="w-full h-32 flex-col gap-2">
-                    <Car className="w-8 h-8 text-secondary" />
+                    <Car className="w-8 h-8 text-primary" />
                     <span className='text-lg'>Sign up as Driver</span>
                 </Button>
             </Link>

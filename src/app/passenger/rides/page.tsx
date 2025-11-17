@@ -7,7 +7,7 @@ import rides from '@/data/rides.json';
 
 export default function RidesPage() {
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50">
+        <div className="flex flex-col min-h-screen bg-background">
             <MobileHeader title="My Rides" backPath="/passenger" />
             <main className="flex-1 p-4 space-y-4">
                 {rides.filter(r => r.passengerId === 'user001').map(ride => (
