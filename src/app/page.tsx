@@ -36,10 +36,10 @@ export default function FemGoHome() {
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 <Button asChild size="lg" className="text-lg">
-                  <Link href="/passenger">Book a Ride</Link>
+                  <Link href="/login">Book a Ride</Link>
                 </Button>
                 <Button asChild variant="secondary" size="lg" className="text-lg">
-                  <Link href="/driver">Drive with Us</Link>
+                  <Link href="/login">Drive with Us</Link>
                 </Button>
               </div>
             </div>
