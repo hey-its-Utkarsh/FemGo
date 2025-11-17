@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
+import Link from 'next/link';
 
 const driverId = "driver001"; // Assuming this is the logged-in driver
 const REQUEST_TIMEOUT_SECONDS = 15;
@@ -150,6 +151,14 @@ export default function DriverDashboard() {
             setActiveRide(null); // Return to dashboard
         }
     };
+    
+    const handleContact = (type: 'call' | 'message') => {
+        const passenger = getPassengerDetails(activeRide!.passengerId);
+        toast({
+            title: `Simulating ${type}`,
+            description: `Contacting ${passenger.name}... (This is a prototype).`,
+        });
+    };
 
   if (activeRide) {
     const passenger = getPassengerDetails(activeRide.passengerId);
@@ -178,8 +187,8 @@ export default function DriverDashboard() {
                     </div>
                 </div>
                  <div className="flex gap-2">
-                    <Button variant="outline" size="icon"><Phone/></Button>
-                    <Button variant="outline" size="icon"><MessageSquare/></Button>
+                    <Button variant="outline" size="icon" onClick={() => handleContact('call')}><Phone/></Button>
+                    <Button variant="outline" size="icon" onClick={() => handleContact('message')}><MessageSquare/></Button>
                 </div>
             </div>
             
@@ -196,9 +205,11 @@ export default function DriverDashboard() {
                  <Button variant="destructive" className="h-14" onClick={() => handleRideAction('cancel')}>
                     <UserX className="mr-2"/> Cancel
                 </Button>
-                <Button variant="secondary" className="h-14">
-                    <Shield className="mr-2"/> SOS
-                </Button>
+                <Link href="/driver/safety" className="w-full h-full">
+                    <Button variant="secondary" className="h-14 w-full">
+                        <Shield className="mr-2"/> SOS
+                    </Button>
+                </Link>
             </div>
           </CardContent>
         </Card>
@@ -303,21 +314,31 @@ export default function DriverDashboard() {
         
         <footer className="border-t border-border p-2 bg-card">
             <div className="grid grid-cols-3 gap-2">
-                <Button variant="ghost" className="flex-col h-16 text-primary">
-                    <Car/>
-                    <span>Home</span>
-                </Button>
-                <Button variant="ghost" className="flex-col h-16 text-muted-foreground">
-                    <CheckCircle/>
-                    <span>Rides</span>
-                </Button>
-                <Button variant="ghost" className="flex-col h-16 text-red-500">
-                    <AlertTriangle/>
-                    <span>SOS</span>
-                </Button>
+                <Link href="/driver" passHref>
+                    <Button variant="ghost" className="flex-col h-16 w-full text-primary">
+                        <Car/>
+                        <span>Home</span>
+                    </Button>
+                </Link>
+                 <Tabs defaultValue="completed">
+                    <TabsTrigger value="completed" asChild>
+                        <Button variant="ghost" className="flex-col h-16 w-full text-muted-foreground">
+                            <CheckCircle/>
+                            <span>Rides</span>
+                        </Button>
+                    </TabsTrigger>
+                </Tabs>
+                <Link href="/driver/safety" passHref>
+                    <Button variant="ghost" className="flex-col h-16 w-full text-red-500">
+                        <AlertTriangle/>
+                        <span>SOS</span>
+                    </Button>
+                </Link>
             </div>
         </footer>
     </div>
   );
 }
+    
+
     
