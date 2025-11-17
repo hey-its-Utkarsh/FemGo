@@ -18,7 +18,7 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 md:bg-background">
       <div className='md:hidden'>
-        <MobileHeader title="Login" backPath="/"/>
+        <MobileHeader title="Login" backPath="/" showHomeButton={false}/>
       </div>
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md border-0 md:border shadow-none md:shadow-lg">
