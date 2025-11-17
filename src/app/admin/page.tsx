@@ -1,3 +1,4 @@
+
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Car, Users, UserCheck, CircleDollarSign, ShieldAlert, BarChart3, Settings, LogOut } from "lucide-react";
@@ -26,7 +27,7 @@ export default function AdminDashboard() {
       {/* Sidebar */}
       <aside className="w-64 bg-white shadow-md flex-col hidden md:flex">
         <div className="h-20 flex items-center justify-center border-b">
-          <h1 className="text-2xl font-bold text-primary">FemGo Admin</h1>
+          <Link href="/" className="text-2xl font-bold text-primary">FemGo Admin</Link>
         </div>
         <nav className="flex-1 p-4 space-y-2">
             {menuItems.map(item => (
