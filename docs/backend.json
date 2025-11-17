@@ -1,0 +1,240 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the SafeHer Rides platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "role": {
+          "type": "string",
+          "description": "Role of the user (Passenger or Female Driver)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the user."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Phone number of the user."
+        },
+        "emergencyContactIds": {
+          "type": "array",
+          "description": "References to emergency contacts. (Relationship: User 1:N EmergencyContact)",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "role",
+        "name",
+        "phoneNumber"
+      ]
+    },
+    "RideRequest": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "RideRequest",
+      "type": "object",
+      "description": "Represents a ride request made by a passenger.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the RideRequest entity."
+        },
+        "passengerId": {
+          "type": "string",
+          "description": "Reference to the Passenger making the request. (Relationship: User 1:N RideRequest)"
+        },
+        "driverId": {
+          "type": "string",
+          "description": "Reference to the Female Driver assigned to the ride. (Relationship: User 1:N RideRequest)"
+        },
+        "pickupLocation": {
+          "type": "string",
+          "description": "Pickup location for the ride."
+        },
+        "destination": {
+          "type": "string",
+          "description": "Destination for the ride."
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the ride request (e.g., requested, accepted, in_progress, completed, cancelled)."
+        },
+        "requestTime": {
+          "type": "string",
+          "description": "Time the ride was requested.",
+          "format": "date-time"
+        },
+        "startTime": {
+          "type": "string",
+          "description": "Time the ride started.",
+          "format": "date-time"
+        },
+        "endTime": {
+          "type": "string",
+          "description": "Time the ride ended.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "passengerId",
+        "pickupLocation",
+        "destination",
+        "status",
+        "requestTime"
+      ]
+    },
+    "EmergencyContact": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "EmergencyContact",
+      "type": "object",
+      "description": "Represents an emergency contact for a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the EmergencyContact entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the emergency contact."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Phone number of the emergency contact."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "phoneNumber"
+      ]
+    },
+    "Location": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Location",
+      "type": "object",
+      "description": "Represents a location (latitude and longitude).",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Location entity."
+        },
+        "latitude": {
+          "type": "number",
+          "description": "Latitude of the location."
+        },
+        "longitude": {
+          "type": "number",
+          "description": "Longitude of the location."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Time the location was recorded.",
+          "format": "date-time"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the user associated with the location. (Relationship: User 1:N Location)"
+        }
+      },
+      "required": [
+        "id",
+        "latitude",
+        "longitude",
+        "timestamp",
+        "userId"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles.  Uses path-based ownership for simplified security rules.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/emergency_contacts/{contactId}",
+        "definition": {
+          "entityName": "EmergencyContact",
+          "schema": {
+            "$ref": "#/backend/entities/EmergencyContact"
+          },
+          "description": "Stores emergency contacts for each user. Path-based ownership ensures only the user can access their contacts.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "contactId",
+              "description": "The unique identifier of the emergency contact."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/locations/{locationId}",
+        "definition": {
+          "entityName": "Location",
+          "schema": {
+            "$ref": "#/backend/entities/Location"
+          },
+          "description": "Stores location data for users. Path-based ownership enables secure location tracking per user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            },
+            {
+              "name": "locationId",
+              "description": "The unique identifier of the location data point."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/ride_requests/{rideRequestId}",
+        "definition": {
+          "entityName": "RideRequest",
+          "schema": {
+            "$ref": "#/backend/entities/RideRequest"
+          },
+          "description": "Stores ride requests made by passengers. Includes denormalized passengerId and driverId for authorization independence.",
+          "params": [
+            {
+              "name": "rideRequestId",
+              "description": "The unique identifier of the ride request."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore data structure is designed to support the SafeHer Rides application, prioritizing security, scalability, and debuggability as per the core design principles. It leverages denormalization, structural segregation, and consistent access modeling to achieve these goals.\n\n**Authorization Independence:**\n*   Authorization is enforced independently at each level, eliminating the need for `get()` calls in security rules. This is primarily achieved through path-based ownership and membership maps.\n*   The structure denormalizes authorization context where needed. For example, `RideRequests` store `passengerId` and `driverId`, enabling rules to verify access without needing to fetch user documents.\n\n**Structural Segregation:**\n*   The design maintains homogeneous security postures within collections. User-owned data (emergency contacts, locations) are stored under `/users/{userId}/...` paths, ensuring that all documents in those collections share the same ownership constraints.\n\n**Access Modeling:**\n*   **Path-Based Ownership:** The `/users/{userId}/emergency_contacts/{contactId}` and `/users/{userId}/locations/{locationId}` patterns enforce clear ownership, simplifying security rules.\n*   **Collaborative Data:** While not explicitly collaborative in the current feature set, the structure is prepared for future collaborative features by emphasizing the membership map pattern. If ride requests needed to be managed by groups of users, the `RideRequest` document could include a `members` map.\n\n**QAPs Support:**\n*   The path-based ownership model (`/users/{userId}/...`) directly supports secure `list` operations. Rules can easily filter lists based on `request.auth.uid` to only show data owned by the current user.\n*   Structural segregation (separating user data into different collections) ensures that listing operations are always performed on data with consistent security requirements.\n\n**Invariants:**\n*   The structure supports the integrity of ownership by explicitly defining owner relationships in the data model (e.g., `RideRequest.passengerId`). Timestamps are included for tracking creation and modification times, and denormalized data is used to maintain consistency across documents.\n\nIn summary, this data structure provides a solid foundation for the SafeHer Rides application. It promotes clear, secure, and easily maintainable code by embracing denormalization, structural segregation, and consistent access modeling."
+  }
+}

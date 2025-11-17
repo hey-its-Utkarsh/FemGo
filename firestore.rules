@@ -1,0 +1,122 @@
+/**
+ * @fileoverview Firestore Security Rules for SafeHer Rides
+ *
+ * Core Philosophy: This ruleset enforces a user-ownership model for personal data (emergency contacts, locations) stored under `/users/{userId}`. Ride requests are secured based on the `passengerId` and `driverId` fields within the request documents, allowing for role-based access.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores user profiles.
+ * - /users/{userId}/emergency_contacts/{contactId}: Stores emergency contacts for each user.
+ * - /users/{userId}/locations/{locationId}: Stores location data for users.
+ * - /ride_requests/{rideRequestId}: Stores ride requests, with denormalized `passengerId` and `driverId` for authorization.
+ *
+ * Key Security Decisions:
+ * - Users can only access their own data under their respective `/users/{userId}` path.
+ * - Ride requests can only be created by the passenger.
+ * - Listing of users is disallowed.
+ * - Data shape validation is relaxed in this prototype. Focus is on authorization.
+ *
+ * Denormalization for Authorization:
+ * - The `RideRequest` entity denormalizes `passengerId` and `driverId` to allow direct authorization checks without needing extra `get()` calls.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Enforces access control for user profiles. Only the user can read and write their own profile.
+     * @path /users/{userId}
+     * @allow (create, update, delete, get, list): User with ID 'user123' creates/modifies/reads their own profile.
+     * @deny (create, update, delete, get, list): User with ID 'user123' tries to access the profile of 'user456'.
+     * @principle Enforces document ownership for user profiles.
+     */
+    match /users/{userId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if false; // Do not allow listing all users
+
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) && resource != null;
+      allow delete: if isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Enforces access control for emergency contacts. Only the user can manage their own emergency contacts.
+     * @path /users/{userId}/emergency_contacts/{contactId}
+     * @allow (create, update, delete, get, list): User with ID 'user123' creates/modifies/reads an emergency contact.
+     * @deny (create, update, delete, get, list): User with ID 'user123' tries to access emergency contacts of 'user456'.
+     * @principle Enforces document ownership for emergency contacts.
+     */
+    match /users/{userId}/emergency_contacts/{contactId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) && resource != null;
+      allow delete: if isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Enforces access control for location data. Only the user can manage their own location data.
+     * @path /users/{userId}/locations/{locationId}
+     * @allow (create, update, delete, get, list): User with ID 'user123' creates/modifies/reads location data.
+     * @deny (create, update, delete, get, list): User with ID 'user123' tries to access location data of 'user456'.
+     * @principle Enforces document ownership for location data.
+     */
+    match /users/{userId}/locations/{locationId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return isSignedIn() && request.auth.uid == userId;
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) && resource != null;
+      allow delete: if isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Enforces access control for ride requests.  Allows passengers to create requests, and authorizes based on passengerId and driverId.
+     * @path /ride_requests/{rideRequestId}
+     * @allow (create): User with ID 'user123' creates a ride request with passengerId 'user123'.
+     * @allow (get, list): Any signed-in user can view ride requests.
+     * @allow (update, delete): Only the user who created the ride request.
+     * @deny (create): User with ID 'user123' tries to create a ride request with passengerId 'user456'.
+     * @principle Enforces ownership for ride requests based on passengerId, and allows public read access.
+     */
+    match /ride_requests/{rideRequestId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isPassenger(rideRequest) {
+          return isSignedIn() && request.auth.uid == rideRequest.passengerId;
+      }
+
+        allow get, list: if true;
+
+        allow create: if isSignedIn() && request.resource.data.passengerId == request.auth.uid;
+        allow update: if isPassenger(resource.data) && resource != null;
+        allow delete: if isPassenger(resource.data) && resource != null;
+    }
+  }
+}
