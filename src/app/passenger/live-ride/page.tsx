@@ -55,7 +55,7 @@ export default function LiveRidePage() {
         <Image
           src="https://picsum.photos/seed/livemap/800/1200"
           alt="Live Ride Map"
-          layout="fill"
+          fill
           objectFit="cover"
           data-ai-hint="map satellite view"
         />
@@ -76,7 +76,7 @@ export default function LiveRidePage() {
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
                 <Image
-                    src="https://picsum.photos/seed/driver1/200/200"
+                    src="https://i.pravatar.cc/150?u=driver001"
                     alt="Driver"
                     width={60}
                     height={60}

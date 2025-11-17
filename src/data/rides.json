@@ -21,10 +21,33 @@
   {
     "id": "ride003",
     "passengerId": "user001",
-    "driverId": null,
     "pickup": "212 Birch Rd, Los Angeles",
     "drop": "333 Elm Ct, Los Angeles",
     "fare": 32.00,
+    "rideStatus": "requested"
+  },
+  {
+    "id": "ride004",
+    "passengerId": "user002",
+    "pickup": "555 Sunset Blvd, Hollywood",
+    "drop": "Rodeo Drive, Beverly Hills",
+    "fare": 28.00,
+    "rideStatus": "requested"
+  },
+  {
+    "id": "ride005",
+    "passengerId": "user003",
+    "pickup": "Santa Monica Pier",
+    "drop": "Venice Beach Boardwalk",
+    "fare": 15.50,
+    "rideStatus": "requested"
+  },
+  {
+    "id": "ride006",
+    "passengerId": "user001",
+    "pickup": "Griffith Observatory",
+    "drop": "The Getty Center",
+    "fare": 45.00,
     "rideStatus": "requested"
   }
 ]

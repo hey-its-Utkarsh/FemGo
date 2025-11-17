@@ -18,7 +18,7 @@ export default function ProfilePage() {
             <main className="flex-1 p-4">
                 <Card className="w-full text-center p-6">
                     <Avatar className="w-24 h-24 mx-auto border-4 border-primary">
-                        <AvatarImage src="https://picsum.photos/seed/user1/200/200" alt={user.name} data-ai-hint="woman portrait" />
+                        <AvatarImage src={`https://i.pravatar.cc/150?u=${user.id}`} alt={user.name} data-ai-hint="woman portrait" />
                         <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <h1 className="text-2xl font-bold mt-4">{user.name}</h1>

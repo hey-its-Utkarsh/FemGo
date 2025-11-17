@@ -20,7 +20,7 @@ export default function RideCompletedPage() {
                 <Card className="w-full max-w-sm">
                     <CardContent className="p-6">
                         <Image
-                            src="https://picsum.photos/seed/driver1/200/200"
+                            src="https://i.pravatar.cc/150?u=driver001"
                             alt="Driver"
                             width={96}
                             height={96}

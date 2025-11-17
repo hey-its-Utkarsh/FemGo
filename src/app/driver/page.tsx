@@ -164,7 +164,7 @@ export default function DriverDashboard() {
     const passenger = getPassengerDetails(activeRide.passengerId);
     return (
       <div className="relative h-screen w-screen overflow-hidden bg-gray-200">
-        <Image src="https://picsum.photos/seed/drivermap/800/1200" alt="Map to passenger" layout="fill" objectFit="cover" data-ai-hint="map satellite view" />
+        <Image src="https://picsum.photos/seed/drivermap/800/1200" alt="Map to passenger" fill objectFit="cover" data-ai-hint="map satellite view" />
         <div className="absolute inset-0 bg-black/40" />
 
         <Card className="absolute bottom-0 left-0 right-0 z-10 rounded-t-3xl border-t-4 border-primary/50 shadow-2xl p-4">
@@ -178,7 +178,7 @@ export default function DriverDashboard() {
             <div className="flex items-center justify-between p-3 bg-card-foreground/5 rounded-lg">
                 <div className="flex items-center gap-3">
                     <Avatar className="h-14 w-14">
-                        <AvatarImage src={`https://picsum.photos/seed/${passenger.id}/200/200`} data-ai-hint="woman portrait" />
+                        <AvatarImage src={`https://i.pravatar.cc/150?u=${passenger.id}`} data-ai-hint="woman portrait" />
                         <AvatarFallback>{passenger.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
@@ -263,7 +263,7 @@ export default function DriverDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <Avatar>
-                                            <AvatarImage src={`https://picsum.photos/seed/${passenger.id}/200/200`} data-ai-hint="woman portrait" />
+                                            <AvatarImage src={`https://i.pravatar.cc/150?u=${passenger.id}`} data-ai-hint="woman portrait" />
                                             <AvatarFallback>{passenger.name.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div>
@@ -293,7 +293,7 @@ export default function DriverDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <Avatar>
-                                            <AvatarImage src={`https://picsum.photos/seed/${passenger.id}/200/200`} data-ai-hint="woman portrait" />
+                                            <AvatarImage src={`https://i.pravatar.cc/150?u=${passenger.id}`} data-ai-hint="woman portrait" />
                                             <AvatarFallback>{passenger.name.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div>
