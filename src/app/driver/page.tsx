@@ -78,6 +78,7 @@ export default function DriverDashboard() {
             }
         }
         return () => {
+            stopNotificationSound();
             if (requestIntervalRef.current) {
                 clearInterval(requestIntervalRef.current);
             }
