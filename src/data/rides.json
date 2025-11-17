@@ -12,15 +12,15 @@
   {
     "id": "ride002",
     "passengerId": "user002",
-    "driverId": "driver002",
+    "driverId": "driver001",
     "pickup": "789 Pine Ln, Los Angeles",
     "drop": "101 Maple Dr, Los Angeles",
     "fare": 18.75,
-    "rideStatus": "in-progress"
+    "rideStatus": "completed"
   },
   {
     "id": "ride003",
-    "passengerId": "user001",
+    "passengerId": "user003",
     "pickup": "212 Birch Rd, Los Angeles",
     "drop": "333 Elm Ct, Los Angeles",
     "fare": 32.00,
@@ -28,7 +28,7 @@
   },
   {
     "id": "ride004",
-    "passengerId": "user002",
+    "passengerId": "user004",
     "pickup": "555 Sunset Blvd, Hollywood",
     "drop": "Rodeo Drive, Beverly Hills",
     "fare": 28.00,
@@ -36,7 +36,7 @@
   },
   {
     "id": "ride005",
-    "passengerId": "user003",
+    "passengerId": "user005",
     "pickup": "Santa Monica Pier",
     "drop": "Venice Beach Boardwalk",
     "fare": 15.50,
@@ -48,6 +48,14 @@
     "pickup": "Griffith Observatory",
     "drop": "The Getty Center",
     "fare": 45.00,
+    "rideStatus": "requested"
+  },
+  {
+    "id": "ride007",
+    "passengerId": "user002",
+    "pickup": "LAX Airport",
+    "drop": "Downtown Union Station",
+    "fare": 55.00,
     "rideStatus": "requested"
   }
 ]
