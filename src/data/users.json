@@ -1,0 +1,24 @@
+
+[
+  {
+    "id": "user001",
+    "name": "Alice Johnson",
+    "gender": "Female",
+    "phone": "+1234567890",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "user002",
+    "name": "Brenda Smith",
+    "gender": "Female",
+    "phone": "+1987654321",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "user003",
+    "name": "Clara Davis",
+    "gender": "Female",
+    "phone": "+1555555555",
+    "verificationStatus": "pending"
+  }
+]

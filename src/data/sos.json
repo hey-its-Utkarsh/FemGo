@@ -1,0 +1,17 @@
+
+[
+  {
+    "id": "sos001",
+    "timestamp": "2024-07-29T10:30:00Z",
+    "userId": "user002",
+    "rideId": "ride002",
+    "location": "Near 850 Pine Ln, Los Angeles"
+  },
+  {
+    "id": "sos002",
+    "timestamp": "2024-07-28T18:45:12Z",
+    "userId": "user001",
+    "rideId": "ride001",
+    "location": "400 Oak Ave, Los Angeles"
+  }
+]

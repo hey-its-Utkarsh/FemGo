@@ -1,140 +1,95 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { KeyRound, MapPin, Shield, UserCheck } from 'lucide-react';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import Header from '@/components/femgo/layout/Header';
+import { ShieldCheck, Users, Car, UserCog } from 'lucide-react';
 
-const features = [
-  {
-    icon: <UserCheck className="h-8 w-8 text-primary" />,
-    title: 'For Women, By Women',
-    description: 'All our drivers are women, ensuring a safer and more comfortable ride experience.',
-  },
-  {
-    icon: <KeyRound className="h-8 w-8 text-primary" />,
-    title: 'OTP-Based Login',
-    description: 'Secure your account and rides with One-Time Passwords for verification.',
-  },
-  {
-    icon: <MapPin className="h-8 w-8 text-primary" />,
-    title: 'Real-Time Tracking',
-    description: 'Share your journey with loved ones and track your ride in real-time for peace of mind.',
-  },
-  {
-    icon: <Shield className="h-8 w-8 text-primary" />,
-    title: 'Emergency Assistance',
-    description: 'An in-app SOS button to connect with authorities and share your location instantly.',
-  },
-];
+export default function FemGoHome() {
+  const heroImage = "https://picsum.photos/seed/femgo/1200/800";
 
-const heroImage = PlaceHolderImages.find(p => p.id === 'hero-woman-car');
-
-export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative w-full py-20 md:py-32 lg:py-40">
-            <div className="absolute inset-0">
-                {heroImage && (
-                    <Image
-                    src={heroImage.imageUrl}
-                    alt={heroImage.description}
-                    fill
-                    className="object-cover"
-                    data-ai-hint={heroImage.imageHint}
-                    priority
-                    />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-                 <div className="absolute inset-0 bg-background/30" />
-            </div>
-            <div className="container relative z-10 text-center">
-                <div className="mx-auto max-w-3xl">
-                    <h1 className="font-headline text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-                        Safe & Empowered Journeys for Women
-                    </h1>
-                    <p className="mt-6 text-lg leading-8 text-foreground/90">
-                        Welcome to SafeHer Rides, a ride-sharing service dedicated to creating a secure and comfortable travel experience for women.
-                    </p>
-                    <div className="mt-10 flex items-center justify-center gap-x-6">
-                        <Button asChild size="lg">
-                            <Link href="/ride">Book a Ride</Link>
-                        </Button>
-                        <Button asChild variant="secondary" size="lg">
-                            <Link href="/drive">Become a Driver</Link>
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        {/* Features Section */}
-        <section id="features" className="py-20 sm:py-32">
-          <div className="container">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                Your Safety is Our Priority
-              </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
-                We've built features to ensure every ride is a safe ride.
+          <div className="absolute inset-0">
+            <Image
+              src={heroImage}
+              alt="Confident woman with a car"
+              fill
+              className="object-cover"
+              data-ai-hint="woman car driving"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent" />
+            <div className="absolute inset-0 bg-white/40" />
+          </div>
+          <div className="container relative z-10 text-center">
+            <div className="mx-auto max-w-3xl">
+              <h1 className="font-headline text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+                Safe Rides, <span className="text-primary">Empowered Journeys</span>.
+              </h1>
+              <p className="mt-6 text-lg leading-8 text-gray-700">
+                Welcome to FemGo, the ride-sharing platform designed for women, by women. Experience safety, comfort, and empowerment on every ride.
               </p>
-            </div>
-            <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-              {features.map((feature) => (
-                <div key={feature.title} className="flex flex-col items-center text-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                    {feature.icon}
-                  </div>
-                  <h3 className="mt-6 text-xl font-semibold text-foreground">{feature.title}</h3>
-                  <p className="mt-2 text-base text-muted-foreground">{feature.description}</p>
-                </div>
-              ))}
+              <div className="mt-10 flex items-center justify-center gap-x-6">
+                <Button asChild size="lg" className="text-lg">
+                  <Link href="/passenger">Book a Ride</Link>
+                </Button>
+                <Button asChild variant="secondary" size="lg" className="text-lg">
+                  <Link href="/driver">Drive with Us</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* How it works */}
-        <section className="bg-card py-20 sm:py-32">
-            <div className="container">
-                <div className="mx-auto max-w-2xl text-center">
-                    <h2 className="font-headline text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                        How It Works
-                    </h2>
-                    <p className="mt-4 text-lg text-muted-foreground">
-                        Getting a safe ride is just a few taps away.
-                    </p>
-                </div>
-                <div className="mt-16 grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-3">
-                    <div className="flex flex-col items-center text-center">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary text-primary">
-                            <span className="text-2xl font-bold">1</span>
-                        </div>
-                        <h3 className="mt-6 text-xl font-semibold text-foreground">Request a Ride</h3>
-                        <p className="mt-2 text-base text-muted-foreground">Enter your destination and confirm your pickup location.</p>
-                    </div>
-                    <div className="flex flex-col items-center text-center">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary text-primary">
-                            <span className="text-2xl font-bold">2</span>
-                        </div>
-                        <h3 className="mt-6 text-xl font-semibold text-foreground">Match with a Driver</h3>
-                        <p className="mt-2 text-base text-muted-foreground">We'll connect you with a nearby female driver.</p>
-                    </div>
-                    <div className="flex flex-col items-center text-center">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary text-primary">
-                            <span className="text-2xl font-bold">3</span>
-                        </div>
-                        <h3 className="mt-6 text-xl font-semibold text-foreground">Enjoy Your Ride</h3>
-                        <p className="mt-2 text-base text-muted-foreground">Travel with confidence, knowing you're in safe hands.</p>
-                    </div>
-                </div>
+        {/* Portals Section */}
+        <section id="portals" className="py-20 sm:py-24">
+          <div className="container">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="font-headline text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                Choose Your Role
+              </h2>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Whether you're a passenger, a driver, or an admin, we have a dedicated experience for you.
+              </p>
             </div>
+            <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
+              <div className="flex flex-col items-center text-center p-8 border rounded-lg shadow-lg hover:shadow-primary/20 transition-shadow">
+                <Users className="h-12 w-12 text-primary mb-4" />
+                <h3 className="text-2xl font-bold">Passenger</h3>
+                <p className="mt-2 text-base text-muted-foreground">Request safe and reliable rides with verified female drivers.</p>
+                <Button asChild className="mt-6">
+                  <Link href="/passenger">Passenger Dashboard</Link>
+                </Button>
+              </div>
+              <div className="flex flex-col items-center text-center p-8 border rounded-lg shadow-lg hover:shadow-secondary/20 transition-shadow">
+                <Car className="h-12 w-12 text-secondary mb-4" />
+                <h3 className="text-2xl font-bold">Driver</h3>
+                <p className="mt-2 text-base text-muted-foreground">Join our community of female drivers and earn on your own schedule.</p>
+                <Button asChild variant="secondary" className="mt-6">
+                  <Link href="/driver">Driver Dashboard</Link>
+                </Button>
+              </div>
+              <div className="flex flex-col items-center text-center p-8 border rounded-lg shadow-lg hover:shadow-accent-foreground/20 transition-shadow">
+                <UserCog className="h-12 w-12 text-accent-foreground mb-4" />
+                <h3 className="text-2xl font-bold">Admin</h3>
+                <p className="mt-2 text-base text-muted-foreground">Manage operations, ensure safety, and oversee the platform.</p>
+                <Button asChild variant="outline" className="mt-6">
+                  <Link href="/admin">Admin Panel</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
         </section>
       </main>
-      <Footer />
+      <footer className="border-t bg-background">
+        <div className="container py-6 text-center text-muted-foreground">
+          <p>&copy; {new Date().getFullYear()} FemGo. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

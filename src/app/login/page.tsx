@@ -1,33 +1,47 @@
 
-import Link from 'next/link';
+'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import MobileHeader from '@/components/femgo/layout/MobileHeader';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+    const router = useRouter();
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Simulate OTP verification and redirect
+        router.push('/passenger');
+    }
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-1 flex items-center justify-center bg-background">
-        <Card className="w-full max-w-md">
+    <div className="flex flex-col min-h-screen bg-gray-50 md:bg-background">
+      <div className='md:hidden'>
+        <MobileHeader title="Login" backPath="/"/>
+      </div>
+      <main className="flex-1 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md border-0 md:border shadow-none md:shadow-lg">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Female Voice & Image Verification</CardTitle>
+            <CardTitle className="text-3xl font-bold text-primary">Welcome Back</CardTitle>
             <CardDescription>
-              To ensure the safety of our community, we need to verify your voice and image.
+              Enter your phone number to login.
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col items-center gap-4">
-            <p className="text-sm text-muted-foreground text-center">
-              You will be asked to read a short phrase and take a photo. This is a simulated process for project demonstration.
-            </p>
-            <Button asChild className="w-full">
-              <Link href="/verify">Start Verification</Link>
-            </Button>
+          <CardContent>
+            <form onSubmit={handleLogin} className="flex flex-col gap-6">
+                <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input id="phone" type="tel" placeholder="+1 (555) 000-0000" defaultValue="+15551234567" />
+                </div>
+                <Button type="submit" size="lg" className="w-full text-lg py-6">Send OTP</Button>
+                <p className="text-center text-sm text-muted-foreground">
+                    We'll send a One-Time Password to your number. <br/> (This is a dummy flow, just click the button).
+                </p>
+            </form>
           </CardContent>
         </Card>
       </main>
-      <Footer />
     </div>
   );
 }

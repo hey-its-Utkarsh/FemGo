@@ -1,0 +1,30 @@
+
+[
+  {
+    "id": "ride001",
+    "passengerId": "user001",
+    "driverId": "driver001",
+    "pickup": "123 Main St, Los Angeles",
+    "drop": "456 Oak Ave, Los Angeles",
+    "fare": 25.50,
+    "rideStatus": "completed"
+  },
+  {
+    "id": "ride002",
+    "passengerId": "user002",
+    "driverId": "driver002",
+    "pickup": "789 Pine Ln, Los Angeles",
+    "drop": "101 Maple Dr, Los Angeles",
+    "fare": 18.75,
+    "rideStatus": "in-progress"
+  },
+  {
+    "id": "ride003",
+    "passengerId": "user001",
+    "driverId": null,
+    "pickup": "212 Birch Rd, Los Angeles",
+    "drop": "333 Elm Ct, Los Angeles",
+    "fare": 32.00,
+    "rideStatus": "requested"
+  }
+]

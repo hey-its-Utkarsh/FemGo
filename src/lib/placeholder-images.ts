@@ -1,10 +1,4 @@
-import data from './placeholder-images.json';
 
-export type ImagePlaceholder = {
-  id: string;
-  description: string;
-  imageUrl: string;
-  imageHint: string;
-};
-
-export const PlaceHolderImages: ImagePlaceholder[] = data.placeholderImages;
+// This file is no longer used in the FemGo prototype.
+// All data is sourced from the /src/data/ folder.
+export const PlaceHolderImages = [];

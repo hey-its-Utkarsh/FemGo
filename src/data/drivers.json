@@ -1,0 +1,30 @@
+
+[
+  {
+    "id": "driver001",
+    "name": "Diana Miller",
+    "vehicle": "Pink Toyota Prius - ABC 123",
+    "rating": 4.9,
+    "availability": "available",
+    "verificationStatus": "verified",
+    "location": { "lat": 34.0522, "lng": -118.2437 }
+  },
+  {
+    "id": "driver002",
+    "name": "Eva Wilson",
+    "vehicle": "Purple Honda Civic - XYZ 789",
+    "rating": 4.8,
+    "availability": "busy",
+    "verificationStatus": "verified",
+    "location": { "lat": 34.055, "lng": -118.25 }
+  },
+  {
+    "id": "driver003",
+    "name": "Fiona Brown",
+    "vehicle": "White Hyundai Kona - QWE 456",
+    "rating": 4.95,
+    "availability": "available",
+    "verificationStatus": "pending",
+    "location": { "lat": 34.048, "lng": -118.24 }
+  }
+]

@@ -1,3 +1,2 @@
-// Flows will be imported for their side effects in this file.
-import "./flows/verify-user-flow";
-import "./flows/verify-user-by-image-flow";
+// Genkit flows are not used in the FemGo prototype.
+// All AI interactions are simulated on the client-side.
