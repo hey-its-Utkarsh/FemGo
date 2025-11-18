@@ -47,6 +47,7 @@ export default function DriverDashboard() {
     const [rideRequests, setRideRequests] = useState<RideRequestWithTimer[]>([]);
     const [completedRides, setCompletedRides] = useState(initialCompletedRides);
     const [activeRide, setActiveRide] = useState<ActiveRide | null>(null);
+    const [activeTab, setActiveTab] = useState('requests');
     const totalEarnings = completedRides.reduce((acc, ride) => acc + ride.fare, 0);
     const { toast } = useToast();
     const notificationSoundRef = useRef<HTMLAudioElement>(null);
@@ -290,7 +291,7 @@ export default function DriverDashboard() {
                 </CardContent>
             </Card>
 
-            <Tabs defaultValue="requests" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-muted">
                     <TabsTrigger value="requests">New Requests ({rideRequests.length})</TabsTrigger>
                     <TabsTrigger value="completed">Completed</TabsTrigger>
@@ -378,17 +379,15 @@ export default function DriverDashboard() {
         <footer className="border-t border-border p-2 bg-card">
             <div className="grid grid-cols-3 gap-2">
                 <Link href="/driver" passHref>
-                    <Button variant="ghost" className="flex-col h-16 w-full text-primary">
+                    <Button variant="ghost" className={`flex-col h-16 w-full ${activeTab === 'requests' ? 'text-primary' : 'text-muted-foreground'}`} onClick={() => setActiveTab('requests')}>
                         <Car/>
                         <span>Home</span>
                     </Button>
                 </Link>
-                <a href="#completed">
-                    <Button variant="ghost" className="flex-col h-16 w-full text-muted-foreground">
-                        <CheckCircle/>
-                        <span>Rides</span>
-                    </Button>
-                </a>
+                <Button variant="ghost" className={`flex-col h-16 w-full ${activeTab === 'completed' ? 'text-primary' : 'text-muted-foreground'}`} onClick={() => setActiveTab('completed')}>
+                    <CheckCircle/>
+                    <span>Rides</span>
+                </Button>
                 <Link href="/driver/safety" passHref>
                     <Button variant="ghost" className="flex-col h-16 w-full text-red-500">
                         <AlertTriangle/>
