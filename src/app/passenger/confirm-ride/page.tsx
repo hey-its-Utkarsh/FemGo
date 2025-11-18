@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import MobileHeader from '@/components/femgo/layout/MobileHeader';
 import { Card, CardContent } from '@/components/ui/card';
-import { Star, ShieldCheck, Car } from 'lucide-react';
+import { Star, ShieldCheck } from 'lucide-react';
 import drivers from '@/data/drivers.json';
 
 export default function ConfirmRidePage() {
@@ -46,7 +46,14 @@ export default function ConfirmRidePage() {
                                 <p className="font-bold text-lg text-primary">{driver.vehicle.split(' - ')[1]}</p>
                                 <p className="text-sm text-muted-foreground">{driver.vehicle.split(' - ')[0]}</p>
                             </div>
-                            <Car className="w-10 h-10 text-primary" />
+                             <Image
+                                src="https://picsum.photos/seed/femgocar/200/200"
+                                alt={driver.vehicle}
+                                width={60}
+                                height={60}
+                                className="rounded-md"
+                                data-ai-hint="pink car"
+                            />
                         </div>
                          <div className="mt-4 flex items-center justify-center gap-2 text-green-600">
                             <ShieldCheck className="w-5 h-5" />
@@ -67,7 +74,3 @@ export default function ConfirmRidePage() {
         </div>
     );
 }
-
-    
-
-    
