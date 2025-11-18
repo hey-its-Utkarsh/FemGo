@@ -26,13 +26,18 @@
     --accent: 330 85% 60%; /* Pink for accents */
     --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 63% 31%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 240 5% 26%;
     --input: 240 5% 16%;
     --ring: 330 85% 60%;
     --radius: 0.8rem;
+    
+    /* Custom Chart Colors */
+    --chart-1: 142 76% 36%;
+    --chart-2: 217 91% 60%;
+    --chart-3: 0 72% 51%;
   }
 
   .dark {
@@ -57,12 +62,17 @@
     --accent: 330 85% 60%; /* Pink for accents */
     --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 63% 31%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 240 5% 26%;
     --input: 240 5% 16%;
     --ring: 330 85% 60%;
+    
+    /* Custom Chart Colors */
+    --chart-1: 142 76% 36%;
+    --chart-2: 217 91% 60%;
+    --chart-3: 0 72% 51%;
   }
 }
 
