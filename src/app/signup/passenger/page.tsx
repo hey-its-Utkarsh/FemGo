@@ -87,15 +87,9 @@ export default function PassengerSignupPage() {
   const handleVoiceStart = () => {
     setVoiceSubStep('recording');
     setRecordingTime(0);
-    recordingTimerRef.current = setInterval(() => {
-      setRecordingTime(prev => prev + 1);
-    }, 1000);
   };
 
   const handleVoiceStop = () => {
-    if (recordingTimerRef.current) {
-      clearInterval(recordingTimerRef.current);
-    }
     setVoiceSubStep('recorded');
   };
 
@@ -134,14 +128,27 @@ export default function PassengerSignupPage() {
     if (step === 'face' && faceSubStep === 'capturing') {
       startCamera();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, faceSubStep, voiceSubStep]);
+
+  useEffect(() => {
+    if (voiceSubStep === 'recording') {
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingTime(prev => prev + 1);
+      }, 1000);
+    } else {
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = null;
+      }
+    }
 
     return () => {
       if (recordingTimerRef.current) {
         clearInterval(recordingTimerRef.current);
       }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, faceSubStep, voiceSubStep]);
+    };
+  }, [voiceSubStep]);
 
   const handleCapturePhoto = () => {
     if (!videoRef.current) return;
@@ -333,7 +340,7 @@ export default function PassengerSignupPage() {
                   <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>Facial Verification Instructions</AlertDialogTitle>
-                        <AlertDialogDescription>
+                        <AlertDialogDescription asChild>
                             <div className='flex flex-col items-center text-center gap-4'>
                                 <div className="relative flex items-center justify-center w-24 h-24">
                                     <User className="w-12 h-12 text-primary" />
@@ -342,10 +349,10 @@ export default function PassengerSignupPage() {
                                 </div>
                                 <div>
                                     To ensure security, we need to capture three photos of your profile:
-                                    <ul className='list-disc list-inside mt-2'>
-                                    <li>A clear photo of your **front profile**.</li>
-                                    <li>A photo of your **left profile**.</li>
-                                    <li>A photo of your **right profile**.</li>
+                                    <ul className='list-disc list-inside mt-2 text-left'>
+                                      <li>A clear photo of your <strong>front profile</strong>.</li>
+                                      <li>A photo of your <strong>left profile</strong>.</li>
+                                      <li>A photo of your <strong>right profile</strong>.</li>
                                     </ul>
                                     Please make sure you are in a well-lit area.
                                 </div>
@@ -438,3 +445,5 @@ export default function PassengerSignupPage() {
     </div>
   );
 }
+
+  
