@@ -27,7 +27,7 @@ export default function SettingsPage() {
         <nav className="flex-1 p-4 space-y-2">
             {menuItems.map(item => (
                 <Link key={item.href} href={item.href}>
-                    <span className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-primary`}>
+                    <span className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent/20 hover:text-primary`}>
                         <item.icon className="h-5 w-5" />
                         {item.title}
                     </span>
@@ -36,7 +36,7 @@ export default function SettingsPage() {
         </nav>
         <div className="p-4 border-t">
             <Link href="/admin/settings">
-                 <span className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all bg-accent text-primary">
+                 <span className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all bg-accent/20 text-primary">
                     <Settings className="h-5 w-5" />
                     Settings
                 </span>
