@@ -35,7 +35,7 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <div className='md:hidden'>
-        <MobileHeader title="Login" backPath="/" />
+        <MobileHeader title="Driver Login" backPath="/" />
       </div>
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md border-0 md:border shadow-none md:shadow-lg">
@@ -50,7 +50,7 @@ export default function LoginPage() {
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="email">Email Address</Label>
                     <Input id="email" type="email" placeholder="you@example.com" defaultValue="driver@femgo.com" onChange={(e) => setEmail(e.target.value)} />
-                    <p className='text-xs text-muted-foreground'>Use "driver@femgo.com" to access the driver dashboard.</p>
+                    <p className='text-xs text-muted-foreground'>Use "driver@femgo.com" to access the driver dashboard or "admin@femgo.com" for admin.</p>
                 </div>
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="password">Password</Label>
