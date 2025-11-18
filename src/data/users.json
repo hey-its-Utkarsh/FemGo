@@ -19,7 +19,15 @@
     "name": "Clara Davis",
     "gender": "Female",
     "phone": "+1555555555",
-    "verificationStatus": "pending"
+    "verificationStatus": "pending",
+    "signupData": {
+      "voiceSample": "/audio/dummy-voice.mp3",
+      "photos": {
+        "front": "https://picsum.photos/seed/clara-front/200/200",
+        "left": "https://picsum.photos/seed/clara-left/200/200",
+        "right": "https://picsum.photos/seed/clara-right/200/200"
+      }
+    }
   },
   {
     "id": "user004",

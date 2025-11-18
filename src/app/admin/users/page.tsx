@@ -1,13 +1,14 @@
 
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, UserCheck, Car, ShieldAlert, BarChart3, Settings, LogOut, CheckCircle, XCircle } from "lucide-react";
+import { Users, UserCheck, Car, ShieldAlert, BarChart3, Settings, LogOut, CheckCircle, XCircle, Mic, Camera } from "lucide-react";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import usersData from '@/data/users.json';
 import complaintsData from '@/data/complaints.json';
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 const menuItems = [
     { title: "User Management", href: "/admin/users", icon: Users },
@@ -73,7 +74,7 @@ export default function UserManagementPage() {
           <div>
             <h3 className="text-xl font-semibold mb-4">Pending User Verifications</h3>
             {pendingUsers.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {pendingUsers.map(user => (
                   <Card key={user.id}>
                     <CardHeader>
@@ -83,7 +84,21 @@ export default function UserManagementPage() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <p className="text-muted-foreground">{user.phone}</p>
+                       <p className="text-muted-foreground">{user.phone}</p>
+                       <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <h4 className="font-semibold mb-2 flex items-center gap-2"><Mic/> Voice Sample</h4>
+                          <Button variant="outline" className="w-full">Play Voice Sample</Button>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-2 flex items-center gap-2"><Camera/> Profile Photos</h4>
+                          <div className="flex gap-2">
+                            <Image src={user.signupData.photos.front} alt="Front profile" width={60} height={60} className="rounded-md" data-ai-hint="woman portrait" />
+                            <Image src={user.signupData.photos.left} alt="Left profile" width={60} height={60} className="rounded-md" data-ai-hint="woman profile" />
+                            <Image src={user.signupData.photos.right} alt="Right profile" width={60} height={60} className="rounded-md" data-ai-hint="woman profile" />
+                          </div>
+                        </div>
+                      </div>
                       <div className="flex gap-4 pt-4">
                         <Button className="w-full bg-green-600 hover:bg-green-700"><CheckCircle className="mr-2"/> Approve</Button>
                         <Button variant="destructive" className="w-full"><XCircle className="mr-2"/> Reject</Button>
