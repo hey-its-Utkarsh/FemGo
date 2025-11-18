@@ -30,7 +30,7 @@ export default function PassengerLoginPage() {
         <MobileHeader title="Passenger Login" backPath="/" />
       </div>
       <main className="flex-1 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md border-0 md:border shadow-none md:shadow-lg">
+        <Card className="w-full max-w-md border-0 md-border shadow-none md:shadow-lg">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold text-primary">Welcome Back</CardTitle>
             <CardDescription>
@@ -41,11 +41,11 @@ export default function PassengerLoginPage() {
             <form onSubmit={handleLogin} className="flex flex-col gap-6">
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="you@example.com" defaultValue="passenger@femgo.com" onChange={(e) => setEmail(e.target.value)} />
+                    <Input id="email" type="email" placeholder="you@example.com" onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" placeholder="••••••••" defaultValue="password123" />
+                    <Input id="password" type="password" placeholder="••••••••" />
                 </div>
                 <Button type="submit" size="lg" className="w-full text-lg py-6">Login</Button>
                 <p className="text-center text-sm text-muted-foreground">

@@ -13,7 +13,7 @@ import { useState } from 'react';
 export default function LoginPage() {
     const router = useRouter();
     const { toast } = useToast();
-    const [email, setEmail] = useState('driver@femgo.com');
+    const [email, setEmail] = useState('');
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -49,11 +49,11 @@ export default function LoginPage() {
             <form onSubmit={handleLogin} className="flex flex-col gap-6">
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="you@example.com" defaultValue="driver@femgo.com" onChange={(e) => setEmail(e.target.value)} />
+                    <Input id="email" type="email" placeholder="you@example.com" onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" placeholder="••••••••" defaultValue="password123" />
+                    <Input id="password" type="password" placeholder="••••••••" />
                 </div>
                 <Button type="submit" size="lg" className="w-full text-lg py-6">Login</Button>
                 <p className="text-center text-sm text-muted-foreground">
