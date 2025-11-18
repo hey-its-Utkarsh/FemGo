@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import usersData from '@/data/users.json';
+import complaintsData from '@/data/complaints.json';
 import { Button } from "@/components/ui/button";
 
 const menuItems = [
@@ -17,7 +18,14 @@ const menuItems = [
 ];
 
 const pendingUsers = usersData.filter(u => u.verificationStatus === 'pending');
-const verifiedUsers = usersData.filter(u => u.verificationStatus !== 'pending');
+
+const getPassengerComplaints = (passengerId: string) => {
+    return complaintsData.filter(c => c.passengerId === passengerId && c.complainant === 'driver').length;
+}
+
+const verifiedUsers = usersData
+    .filter(u => u.verificationStatus !== 'pending')
+    .sort((a, b) => getPassengerComplaints(b.id) - getPassengerComplaints(a.id));
 
 
 export default function UserManagementPage() {
@@ -100,6 +108,7 @@ export default function UserManagementPage() {
                     <TableHead>Name</TableHead>
                     <TableHead>Phone</TableHead>
                     <TableHead>Verification Status</TableHead>
+                    <TableHead>Complaints</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -112,6 +121,11 @@ export default function UserManagementPage() {
                         <Badge variant={user.verificationStatus === 'verified' ? 'default' : 'secondary'} className={user.verificationStatus === 'verified' ? 'bg-green-500/20 text-green-700' : 'bg-yellow-500/20 text-yellow-700'}>
                           {user.verificationStatus}
                         </Badge>
+                      </TableCell>
+                       <TableCell>
+                          <Badge variant={getPassengerComplaints(user.id) > 0 ? 'destructive' : 'default'} className={getPassengerComplaints(user.id) > 0 ? '' : 'bg-transparent text-muted-foreground'}>
+                            {getPassengerComplaints(user.id)}
+                          </Badge>
                       </TableCell>
                       <TableCell>
                           <Button variant="ghost" size="sm">Edit</Button>

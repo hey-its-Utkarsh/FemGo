@@ -6,7 +6,8 @@
         "passengerId": "user001",
         "date": "2024-07-28",
         "reason": "Late arrival",
-        "comment": "Driver was 15 minutes late for pickup without any notification."
+        "comment": "Driver was 15 minutes late for pickup without any notification.",
+        "complainant": "passenger"
     },
     {
         "id": "complaint002",
@@ -14,6 +15,34 @@
         "passengerId": "user003",
         "date": "2024-07-29",
         "reason": "Unprofessional behavior",
-        "comment": "Driver was talking on the phone for the entire duration of the ride."
+        "comment": "Driver was talking on the phone for the entire duration of the ride.",
+        "complainant": "passenger"
+    },
+    {
+        "id": "complaint003",
+        "driverId": "driver001",
+        "passengerId": "user002",
+        "date": "2024-07-30",
+        "reason": "Disrespectful behavior",
+        "comment": "Passenger was rude and left trash in the vehicle.",
+        "complainant": "driver"
+    },
+    {
+        "id": "complaint004",
+        "driverId": "driver001",
+        "passengerId": "user004",
+        "date": "2024-07-31",
+        "reason": "Damaged vehicle",
+        "comment": "Passenger spilled a drink on the seat and did not clean it up.",
+        "complainant": "driver"
+    },
+    {
+        "id": "complaint005",
+        "driverId": "driver002",
+        "passengerId": "user004",
+        "date": "2024-08-01",
+        "reason": "Incorrect destination",
+        "comment": "Passenger insisted on a different drop-off location than what was entered in the app.",
+        "complainant": "driver"
     }
 ]
