@@ -79,7 +79,7 @@ export default function LiveRidePage() {
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
                 <Image
-                    src={`https://i.pravatar.cc/150?u=${driver.id}`}
+                    src={`https://xsgames.co/randomusers/assets/avatars/female/${driver.id.replace('driver','_')}.jpg`}
                     alt="Driver"
                     width={60}
                     height={60}
@@ -125,5 +125,7 @@ export default function LiveRidePage() {
     </div>
   );
 }
+
+    
 
     

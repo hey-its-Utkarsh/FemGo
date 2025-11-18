@@ -22,7 +22,7 @@ export default function RideCompletedPage() {
                 <Card className="w-full max-w-sm">
                     <CardContent className="p-6">
                         <Image
-                            src={`https://i.pravatar.cc/150?u=${driver.id}`}
+                            src={`https://xsgames.co/randomusers/assets/avatars/female/${driver.id.replace('driver','_')}.jpg`}
                             alt="Driver"
                             width={96}
                             height={96}
@@ -53,5 +53,7 @@ export default function RideCompletedPage() {
         </div>
     )
 }
+
+    
 
     

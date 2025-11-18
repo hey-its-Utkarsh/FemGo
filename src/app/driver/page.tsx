@@ -204,7 +204,7 @@ export default function DriverDashboard() {
             <div className="flex items-center justify-between p-3 bg-card-foreground/5 rounded-lg">
                 <div className="flex items-center gap-3">
                     <Avatar className="h-14 w-14">
-                        <AvatarImage src={`https://i.pravatar.cc/150?u=${passenger.id}`} data-ai-hint="woman portrait" />
+                        <AvatarImage src={`https://xsgames.co/randomusers/assets/avatars/female/${passenger.id.replace('user','_')}.jpg`} data-ai-hint="woman portrait" />
                         <AvatarFallback>{passenger.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
@@ -289,7 +289,7 @@ export default function DriverDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <Avatar>
-                                            <AvatarImage src={`https://i.pravatar.cc/150?u=${passenger.id}`} data-ai-hint="woman portrait" />
+                                            <AvatarImage src={`https://xsgames.co/randomusers/assets/avatars/female/${req.passengerId.replace('user','_')}.jpg`} data-ai-hint="woman portrait" />
                                             <AvatarFallback>{passenger.name.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div>
@@ -326,7 +326,7 @@ export default function DriverDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <Avatar>
-                                            <AvatarImage src={`https://i.pravatar.cc/150?u=${passenger.id}`} data-ai-hint="woman portrait" />
+                                            <AvatarImage src={`https://xsgames.co/randomusers/assets/avatars/female/${ride.passengerId.replace('user','_')}.jpg`} data-ai-hint="woman portrait" />
                                             <AvatarFallback>{passenger.name.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div>
@@ -370,5 +370,7 @@ export default function DriverDashboard() {
     </div>
   );
 }
+
+    
 
     
