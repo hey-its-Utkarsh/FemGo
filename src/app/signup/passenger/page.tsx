@@ -179,10 +179,6 @@ export default function PassengerSignupPage() {
         description: "Could not verify identity.",
     });
 
-    setTimeout(() => {
-        router.push('/login/passenger');
-    }, faceMessages.length * 400 + 1000);
-
     if (videoRef.current && videoRef.current.srcObject) {
         const stream = videoRef.current.srcObject as MediaStream;
         stream.getTracks().forEach(track => track.stop());
@@ -268,7 +264,7 @@ export default function PassengerSignupPage() {
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Voice Verification Instructions</AlertDialogTitle>
-                         <AlertDialogDescription>
+                         <AlertDialogDescription asChild>
                             <div className="flex flex-col items-center text-center gap-4">
                                 <div className="relative w-24 h-24">
                                     <Mic className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 text-primary" />
@@ -402,11 +398,12 @@ export default function PassengerSignupPage() {
       case 'complete':
         return (
           <>
-            <CardTitle>Signup Complete!</CardTitle>
-            <CardDescription>Redirecting you to the login page...</CardDescription>
+            <CardTitle>Verification Complete!</CardTitle>
+            <CardDescription>Facial signatures verified. You can use your credentials now for login.</CardDescription>
             <div className="py-8 flex justify-center text-green-500">
               <ShieldCheck size={80} />
             </div>
+            <Button onClick={() => router.push('/login/passenger')} className="w-full" size="lg">OK</Button>
           </>
         );
       case 'failed':
@@ -446,4 +443,4 @@ export default function PassengerSignupPage() {
   );
 }
 
-  
+    
