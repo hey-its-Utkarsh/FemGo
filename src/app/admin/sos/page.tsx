@@ -76,7 +76,7 @@ export default function SosMonitoringPage() {
                 <TableBody>
                   {sosData.map(sos => (
                     <TableRow key={sos.id} className="bg-red-500/10">
-                      <TableCell>{new Date(sos.timestamp).toLocaleString()}</TableCell>
+                      <TableCell>{new Date(sos.timestamp).toUTCString()}</TableCell>
                       <TableCell>{getUserName(sos.userId)}</TableCell>
                       <TableCell>{sos.rideId}</TableCell>
                       <TableCell>{sos.location}</TableCell>
