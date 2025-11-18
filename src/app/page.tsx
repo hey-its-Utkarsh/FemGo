@@ -35,7 +35,7 @@ export default function FemGoHome() {
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 <Button asChild size="lg" className="text-lg">
-                  <Link href="/signup/passenger">Book a Ride</Link>
+                  <Link href="/login/passenger">Book a Ride</Link>
                 </Button>
                 <Button asChild variant="secondary" size="lg" className="text-lg">
                   <Link href="/signup/driver">Drive with Us</Link>
@@ -62,7 +62,7 @@ export default function FemGoHome() {
                 <h3 className="text-2xl font-bold">Passenger</h3>
                 <p className="mt-2 text-base text-muted-foreground">Request safe and reliable rides with verified female drivers.</p>
                 <Button asChild className="mt-6">
-                  <Link href="/login">Passenger Dashboard</Link>
+                  <Link href="/login/passenger">Passenger Dashboard</Link>
                 </Button>
               </div>
               <div className="flex flex-col items-center text-center p-8 border rounded-lg shadow-lg bg-card hover:shadow-secondary/20 transition-shadow">
