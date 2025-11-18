@@ -40,7 +40,7 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md border-0 md:border shadow-none md:shadow-lg">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold text-primary">Driver or Admin Login</CardTitle>
+            <CardTitle className="text-3xl font-bold text-primary">Driver & Admin Login</CardTitle>
             <CardDescription>
               Log in to your FemGo account.
             </CardDescription>
@@ -66,7 +66,7 @@ export default function LoginPage() {
                  <p className="text-center text-sm text-muted-foreground">
                     Don't have an account?{' '}
                     <Link href="/signup/driver" className="font-semibold text-primary hover:underline">
-                        Sign Up
+                        Sign Up as a Driver
                     </Link>
                 </p>
             </form>

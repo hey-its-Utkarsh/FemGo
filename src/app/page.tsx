@@ -78,7 +78,7 @@ export default function FemGoHome() {
                 <h3 className="text-2xl font-bold">Admin</h3>
                 <p className="mt-2 text-base text-muted-foreground">Manage operations, ensure safety, and oversee the platform.</p>
                 <Button asChild variant="outline" className="mt-6">
-                  <Link href="/admin">Admin Panel</Link>
+                  <Link href="/login">Admin Panel</Link>
                 </Button>
               </div>
             </div>
