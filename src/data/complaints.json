@@ -1,0 +1,19 @@
+
+[
+    {
+        "id": "complaint001",
+        "driverId": "driver002",
+        "passengerId": "user001",
+        "date": "2024-07-28",
+        "reason": "Late arrival",
+        "comment": "Driver was 15 minutes late for pickup without any notification."
+    },
+    {
+        "id": "complaint002",
+        "driverId": "driver002",
+        "passengerId": "user003",
+        "date": "2024-07-29",
+        "reason": "Unprofessional behavior",
+        "comment": "Driver was talking on the phone for the entire duration of the ride."
+    }
+]

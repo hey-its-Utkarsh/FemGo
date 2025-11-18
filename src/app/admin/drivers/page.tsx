@@ -1,12 +1,14 @@
 
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, UserCheck, Car, ShieldAlert, BarChart3, Settings, LogOut } from "lucide-react";
+import { Users, UserCheck, Car, ShieldAlert, BarChart3, Settings, LogOut, Mic, Camera, CheckCircle, XCircle } from "lucide-react";
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import driversData from '@/data/drivers.json';
+import complaintsData from '@/data/complaints.json';
 import { Button } from "@/components/ui/button";
+import Image from 'next/image';
 
 const menuItems = [
     { title: "User Management", href: "/admin/users", icon: Users },
@@ -15,6 +17,13 @@ const menuItems = [
     { title: "SOS Monitoring", href: "/admin/sos", icon: ShieldAlert },
     { title: "Analytics", href: "/admin/analytics", icon: BarChart3 },
 ];
+
+const pendingDrivers = driversData.filter(d => d.verificationStatus === 'pending');
+const verifiedDrivers = driversData.filter(d => d.verificationStatus !== 'pending');
+
+const getDriverComplaints = (driverId: string) => {
+    return complaintsData.filter(c => c.driverId === driverId).length;
+}
 
 export default function DriverManagementPage() {
   return (
@@ -55,7 +64,50 @@ export default function DriverManagementPage() {
         <header className="h-20 flex items-center justify-between bg-white dark:bg-card shadow-sm px-8">
             <h2 className="text-2xl font-semibold text-foreground">Driver Management</h2>
         </header>
-        <main className="flex-1 p-8 bg-gray-50 dark:bg-background">
+        <main className="flex-1 p-8 bg-gray-50 dark:bg-background space-y-8">
+
+          {/* Pending Verifications */}
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Pending Manual Verification</h3>
+            {pendingDrivers.length > 0 ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {pendingDrivers.map(driver => (
+                  <Card key={driver.id}>
+                    <CardHeader>
+                      <CardTitle className="flex justify-between items-center">
+                        <span>{driver.name}</span>
+                        <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-700">Pending</Badge>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <h4 className="font-semibold mb-2 flex items-center gap-2"><Mic/> Voice Sample</h4>
+                          <Button variant="outline" className="w-full">Play Voice Sample</Button>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-2 flex items-center gap-2"><Camera/> Profile Photos</h4>
+                          <div className="flex gap-2">
+                            <Image src={driver.signupData.photos.front} alt="Front profile" width={60} height={60} className="rounded-md" data-ai-hint="woman portrait" />
+                            <Image src={driver.signupData.photos.left} alt="Left profile" width={60} height={60} className="rounded-md" data-ai-hint="woman profile" />
+                            <Image src={driver.signupData.photos.right} alt="Right profile" width={60} height={60} className="rounded-md" data-ai-hint="woman profile" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-4 pt-4">
+                        <Button className="w-full bg-green-600 hover:bg-green-700"><CheckCircle className="mr-2"/> Approve</Button>
+                        <Button variant="destructive" className="w-full"><XCircle className="mr-2"/> Reject</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-foreground">No drivers are currently pending verification.</p>
+            )}
+          </div>
+
+          {/* Registered Drivers */}
           <Card>
             <CardHeader>
               <CardTitle>Registered Drivers</CardTitle>
@@ -67,30 +119,30 @@ export default function DriverManagementPage() {
                     <TableHead>Name</TableHead>
                     <TableHead>Vehicle</TableHead>
                     <TableHead>Rating</TableHead>
+                    <TableHead>Complaints</TableHead>
                     <TableHead>Availability</TableHead>
-                    <TableHead>Verification Status</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {driversData.map(driver => (
+                  {verifiedDrivers.map(driver => (
                     <TableRow key={driver.id}>
                       <TableCell className="font-medium">{driver.name}</TableCell>
                       <TableCell>{driver.vehicle}</TableCell>
                       <TableCell>{driver.rating}</TableCell>
+                      <TableCell>
+                          <Badge variant={getDriverComplaints(driver.id) > 0 ? 'destructive' : 'default'} className={getDriverComplaints(driver.id) > 0 ? '' : 'bg-transparent text-muted-foreground'}>
+                            {getDriverComplaints(driver.id)}
+                          </Badge>
+                      </TableCell>
                       <TableCell>
                           <Badge variant={driver.availability === 'available' ? 'default' : 'secondary'} className={driver.availability === 'available' ? 'bg-green-500/20 text-green-700' : 'bg-orange-500/20 text-orange-700'}>
                               {driver.availability}
                           </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={driver.verificationStatus === 'verified' ? 'default' : 'secondary'} className={driver.verificationStatus === 'verified' ? 'bg-green-500/20 text-green-700' : 'bg-yellow-500/20 text-yellow-700'}>
-                          {driver.verificationStatus}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                          <Button variant="ghost" size="sm">Edit</Button>
-                          <Button variant="ghost" size="sm" className="text-destructive">Delete</Button>
+                          <Button variant="ghost" size="sm">View Details</Button>
+                          <Button variant="ghost" size="sm" className="text-destructive">Suspend</Button>
                       </TableCell>
                     </TableRow>
                   ))}

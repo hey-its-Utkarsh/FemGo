@@ -25,6 +25,31 @@
     "rating": 4.95,
     "availability": "available",
     "verificationStatus": "pending",
-    "location": { "lat": 34.048, "lng": -118.24 }
+    "location": { "lat": 34.048, "lng": -118.24 },
+    "signupData": {
+      "voiceSample": "/audio/dummy-voice.mp3",
+      "photos": {
+        "front": "https://picsum.photos/seed/fiona-front/200/200",
+        "left": "https://picsum.photos/seed/fiona-left/200/200",
+        "right": "https://picsum.photos/seed/fiona-right/200/200"
+      }
+    }
+  },
+  {
+    "id": "driver004",
+    "name": "Grace Turner",
+    "vehicle": "Blue Nissan Leaf - RTY 123",
+    "rating": 4.85,
+    "availability": "available",
+    "verificationStatus": "pending",
+    "location": { "lat": 34.06, "lng": -118.26 },
+    "signupData": {
+      "voiceSample": "/audio/dummy-voice.mp3",
+      "photos": {
+        "front": "https://picsum.photos/seed/grace-front/200/200",
+        "left": "https://picsum.photos/seed/grace-left/200/200",
+        "right": "https://picsum.photos/seed/grace-right/200/200"
+      }
+    }
   }
 ]
