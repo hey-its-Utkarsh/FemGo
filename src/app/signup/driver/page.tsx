@@ -2,29 +2,34 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Mic, Camera, Loader2, ShieldCheck, ShieldX } from 'lucide-react';
+import { Mic, Camera, Loader2, ShieldCheck, ShieldX, Video, User, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { dummySpeechSafety, dummyFaceVerification } from '@/lib/ai-simulation';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import MobileHeader from '@/components/femgo/layout/MobileHeader';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import Image from 'next/image';
 
 type SignupStep = 'details' | 'voice' | 'face' | 'verifying' | 'complete' | 'failed';
+type VoiceStep = 'idle' | 'recording' | 'recorded';
+type FaceStep = 'instructions' | 'capturing' | 'captured';
+type FaceProfile = 'front' | 'left' | 'right';
+
+
 const verificationSteps = [
     "Initializing verification sequence...",
     "Establishing secure connection...",
-    "Analyzing vocal patterns...",
+    "Analyzing vocal patterns for authenticity...",
     "Checking for stress indicators...",
     "Voice signature confirmed.",
     "Activating camera...",
-    "Detecting facial landmarks...",
-    "Cross-referencing facial data...",
-    "Verifying gender...",
+    "Analyzing facial landmarks...",
+    "Cross-referencing profiles for consistency...",
+    "Verifying gender and identity markers...",
     "Finalizing identity check...",
 ];
 const voicePrompts = [
@@ -38,11 +43,17 @@ const voicePrompts = [
 
 export default function DriverSignupPage() {
   const [step, setStep] = useState<SignupStep>('details');
+  const [voiceSubStep, setVoiceSubStep] = useState<VoiceStep>('idle');
+  const [faceSubStep, setFaceSubStep] = useState<FaceStep>('instructions');
   const [progress, setProgress] = useState(0);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [verificationStatusText, setVerificationStatusText] = useState('');
   const [voicePrompt, setVoicePrompt] = useState('');
+  const [capturedPhotos, setCapturedPhotos] = useState<Record<FaceProfile, string | null>>({ front: null, left: null, right: null });
+  const [currentProfile, setCurrentProfile] = useState<FaceProfile>('front');
+
   const videoRef = useRef<HTMLVideoElement>(null);
+  const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
   const { toast } = useToast();
   
@@ -73,47 +84,73 @@ export default function DriverSignupPage() {
     setStep('voice');
   };
 
-  // Step 2: Voice recording simulation
   const handleVoiceStart = () => {
+    setVoiceSubStep('recording');
+    recordingTimerRef.current = setTimeout(() => {
+      setVoiceSubStep('recorded');
+    }, 3000); // Simulate 3 seconds of recording
+  };
+
+  const handleVoiceSubmit = () => {
     setStep('verifying');
     setProgress(30);
     const voiceMessages = verificationSteps.slice(0, 5);
     updateVerificationStatus(voiceMessages, 'face', true, 60, null);
   };
 
-  // Step 3: Request camera permission
+  const startCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        setHasCameraPermission(true);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        setHasCameraPermission(false);
+        toast({
+          variant: "destructive",
+          title: "Camera Access Denied",
+          description: "Please enable camera permissions to continue.",
+        });
+      }
+  };
+
   useEffect(() => {
     if (step === 'voice') {
       setVoicePrompt(voicePrompts[Math.floor(Math.random() * voicePrompts.length)]);
     }
 
-    if (step === 'face') {
-      const getCameraPermission = async () => {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-          setHasCameraPermission(true);
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-          }
-          setProgress(75);
-        } catch (error) {
-          console.error('Error accessing camera:', error);
-          setHasCameraPermission(false);
-          toast({
-            variant: "destructive",
-            title: "Camera Access Denied",
-            description: "Please enable camera permissions to continue.",
-          });
-        }
-      };
-      getCameraPermission();
+    if (step === 'face' && faceSubStep === 'capturing') {
+      startCamera();
     }
-  }, [step, toast]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, faceSubStep]);
 
 
-  // Step 4: Face capture and verification
-  const handleFaceCapture = async () => {
+  const handleCapturePhoto = () => {
+    if (!videoRef.current) return;
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    const context = canvas.getContext('2d');
+    
+    if (context) {
+      context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg');
+      setCapturedPhotos(prev => ({...prev, [currentProfile]: dataUrl}));
+
+      // Move to next profile
+      if (currentProfile === 'front') setCurrentProfile('left');
+      else if (currentProfile === 'left') setCurrentProfile('right');
+      else setFaceSubStep('captured');
+    }
+  };
+
+  const handleFaceSubmit = async () => {
     setStep('verifying');
+    setProgress(75);
     const faceMessages = verificationSteps.slice(5);
     updateVerificationStatus(faceMessages, 'complete', true, 100, {
         variant: "destructive",
@@ -135,8 +172,49 @@ export default function DriverSignupPage() {
 
   const handleReset = () => {
     setProgress(0);
+    setCapturedPhotos({ front: null, left: null, right: null });
+    setCurrentProfile('front');
+    setFaceSubStep('instructions');
+    setVoiceSubStep('idle');
     setStep('details');
   };
+
+  const renderPhotoCaptureUI = () => {
+    return (
+      <>
+        <CardTitle>Gender Recognition (Step 3/3)</CardTitle>
+        <CardDescription>Position your face in the frame and capture your profile.</CardDescription>
+        <div className="py-4 aspect-video w-full rounded-md bg-muted overflow-hidden flex items-center justify-center relative">
+            <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline />
+            <div className='absolute inset-0 flex items-center justify-center pointer-events-none'>
+                <div className='w-48 h-64 border-4 border-dashed border-primary/50 rounded-lg' />
+            </div>
+            {currentProfile === 'left' && <div className="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-md"><ChevronLeft className="w-8 h-8" /></div>}
+            {currentProfile === 'right' && <div className="absolute top-4 left-4 text-white bg-black/50 p-2 rounded-md"><ChevronRight className="w-8 h-8" /></div>}
+            {currentProfile === 'front' && <div className="absolute top-4 text-white bg-black/50 p-2 rounded-md"><User className="w-8 h-8" /></div>}
+        </div>
+        
+        {hasCameraPermission === false && (
+            <div className='text-red-500 text-sm'>Camera permission denied. Please enable it in your browser settings.</div>
+        )}
+
+        <Button onClick={handleCapturePhoto} disabled={!hasCameraPermission} className="w-full" size="lg">
+            <Camera className="mr-2" /> Capture {currentProfile.charAt(0).toUpperCase() + currentProfile.slice(1)} Profile
+        </Button>
+
+        <div className='mt-4 space-y-2'>
+          <p className='text-sm text-muted-foreground'>Captured Photos:</p>
+          <div className='grid grid-cols-3 gap-2'>
+            {Object.entries(capturedPhotos).map(([key, value]) => (
+              <div key={key} className='aspect-square bg-muted rounded-md flex items-center justify-center'>
+                {value ? <Image src={value} alt={`${key} profile`} width={100} height={100} className='rounded-md' /> : <div className='text-xs text-muted-foreground'>{key}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </>
+    )
+  }
   
   const renderStepContent = () => {
     switch (step) {
@@ -183,33 +261,76 @@ export default function DriverSignupPage() {
             <CardDescription className='pt-2'>Press the button and clearly say:</CardDescription>
             <p className='text-lg font-semibold text-primary py-4'>"{voicePrompt}"</p>
             <div className="py-4 flex justify-center">
-              <Button size="icon" className="w-24 h-24 rounded-full bg-primary hover:bg-primary/90" onClick={handleVoiceStart}>
-                <Mic size={48} />
-              </Button>
+              {voiceSubStep === 'idle' && (
+                <Button size="icon" className="w-24 h-24 rounded-full bg-primary hover:bg-primary/90" onClick={handleVoiceStart}>
+                  <Mic size={48} />
+                </Button>
+              )}
+              {voiceSubStep === 'recording' && (
+                 <Button size="icon" className="w-24 h-24 rounded-full bg-red-500 cursor-not-allowed" disabled>
+                  <Mic size={48} className='animate-pulse' />
+                </Button>
+              )}
+              {voiceSubStep === 'recorded' && (
+                <div className='flex flex-col items-center gap-4 w-full'>
+                    <p className='text-green-500 flex items-center gap-2'><Check /> Recording Complete</p>
+                    <Button size="lg" className="w-full" onClick={handleVoiceSubmit}>
+                        Submit for Analysis
+                    </Button>
+                     <Button size="lg" variant="outline" className="w-full" onClick={() => setVoiceSubStep('idle')}>
+                        Record Again
+                    </Button>
+                </div>
+              )}
             </div>
           </>
         );
       case 'face':
         return (
-            <>
-                <CardTitle>Gender Recognition (Step 3/3)</CardTitle>
-                <CardDescription>Position your face in the frame to complete signup.</CardDescription>
-                <div className="py-4 aspect-video w-full rounded-md bg-muted overflow-hidden flex items-center justify-center">
-                    <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted />
+          <>
+             <AlertDialog open={faceSubStep === 'instructions'} onOpenChange={(open) => !open && setFaceSubStep('capturing')}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                    <AlertDialogTitle>Facial Verification Instructions</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        To ensure security, we need to capture three photos of your profile:
+                        <ul className='list-disc list-inside mt-2'>
+                        <li>1. A clear photo of your **front profile**.</li>
+                        <li>2. A photo of your **left profile**.</li>
+                        <li>3. A photo of your **right profile**.</li>
+                        </ul>
+                        Please make sure you are in a well-lit area.
+                    </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                    <AlertDialogAction onClick={() => setFaceSubStep('capturing')}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+            
+            {faceSubStep === 'capturing' && renderPhotoCaptureUI()}
+            
+            {faceSubStep === 'captured' && (
+              <>
+                <CardTitle>Ready to Submit?</CardTitle>
+                <CardDescription>Review your captured photos below.</CardDescription>
+                <div className='mt-4 space-y-2'>
+                  <div className='grid grid-cols-3 gap-2'>
+                    {Object.entries(capturedPhotos).map(([key, value]) => (
+                      <div key={key} className='aspect-square bg-muted rounded-md flex items-center justify-center'>
+                        {value ? <Image src={value} alt={`${key} profile`} width={100} height={100} className='rounded-md' /> : null}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                {hasCameraPermission === false && (
-                    <Alert variant="destructive">
-                    <AlertTitle>Camera Access Required</AlertTitle>
-                    <AlertDescription>
-                        Please allow camera access to use this feature.
-                    </AlertDescription>
-                    </Alert>
-                )}
-                <Button onClick={handleFaceCapture} disabled={!hasCameraPermission} className="w-full" size="lg">
-                    <Camera className="mr-2" /> Capture & Finish
+                <Button onClick={handleFaceSubmit} className="w-full mt-6" size="lg">Submit for Final Analysis</Button>
+                <Button onClick={() => { setCurrentProfile('front'); setCapturedPhotos({ front: null, left: null, right: null }); setFaceSubStep('capturing'); }} variant="outline" className="w-full mt-2">
+                    Recapture Photos
                 </Button>
-            </>
-        )
+              </>
+            )}
+          </>
+        );
       case 'verifying':
         return (
           <>
@@ -267,7 +388,3 @@ export default function DriverSignupPage() {
     </div>
   );
 }
-
-    
-
-    
