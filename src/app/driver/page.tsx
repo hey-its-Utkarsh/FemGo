@@ -306,10 +306,15 @@ export default function DriverDashboard() {
                                         <div>
                                             <p className="font-bold text-card-foreground">{passenger.name}</p>
                                             <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                                                {passenger.verificationStatus === 'verified' && (
+                                                {passenger.verificationStatus === 'verified' ? (
                                                     <span className="flex items-center gap-1 text-green-500">
                                                         <CheckCircle className="w-3 h-3" />
                                                         Verified Profile
+                                                    </span>
+                                                ) : (
+                                                    <span className="flex items-center gap-1 text-yellow-500">
+                                                        <AlertTriangle className="w-3 h-3" />
+                                                        Unverified Profile
                                                     </span>
                                                 )}
                                                 <span>•</span>
