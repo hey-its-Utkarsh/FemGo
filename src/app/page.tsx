@@ -6,7 +6,7 @@ import Header from '@/components/femgo/layout/Header';
 import { ShieldCheck, Users, Car, UserCog } from 'lucide-react';
 
 export default function FemGoHome() {
-  const heroImage = "https://picsum.photos/seed/female-riders/1200/800";
+  const heroImage = "https://images.unsplash.com/photo-1531384370597-859694295460?q=80&w=1770&auto=format&fit=crop";
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -20,7 +20,7 @@ export default function FemGoHome() {
               alt="Women friends enjoying a ride"
               fill
               className="object-cover opacity-30"
-              data-ai-hint="female riders"
+              data-ai-hint="women friends car"
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
