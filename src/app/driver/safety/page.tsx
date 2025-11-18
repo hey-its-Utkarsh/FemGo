@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
-type SOSState = 'idle' | 'sending' | 'sent' | 'capturing';
+type SOSState = 'idle' | 'sending' | 'capturing';
 
 export default function DriverSafetyPage() {
     const [sosState, setSosState] = useState<SOSState>('idle');
@@ -19,7 +19,12 @@ export default function DriverSafetyPage() {
     const streamRef = useRef<MediaStream | null>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const photoIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const audioTimerIntervalRef = useRef<NodeJS.Timeout | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);
+
+    const [photoCount, setPhotoCount] = useState(0);
+    const [audioDuration, setAudioDuration] = useState(0);
+
 
     useEffect(() => {
         const getPermissions = async () => {
@@ -48,9 +53,9 @@ export default function DriverSafetyPage() {
             if (streamRef.current) {
                 streamRef.current.getTracks().forEach(track => track.stop());
             }
-            if (photoIntervalRef.current) {
-                clearInterval(photoIntervalRef.current);
-            }
+            if (photoIntervalRef.current) clearInterval(photoIntervalRef.current);
+            if (audioTimerIntervalRef.current) clearInterval(audioTimerIntervalRef.current);
+            
             if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
                 mediaRecorderRef.current.stop();
             }
@@ -75,9 +80,14 @@ export default function DriverSafetyPage() {
         };
         mediaRecorderRef.current.start();
         console.log("Audio recording started.");
+        
+        audioTimerIntervalRef.current = setInterval(() => {
+            setAudioDuration(prev => prev + 1);
+        }, 1000);
 
         // Start Photo Capture Interval
         photoIntervalRef.current = setInterval(() => {
+             setPhotoCount(prev => prev + 1);
             if (videoRef.current) {
                 const canvas = document.createElement('canvas');
                 canvas.width = videoRef.current.videoWidth;
@@ -92,6 +102,8 @@ export default function DriverSafetyPage() {
             }
         }, 10000); // Every 10 seconds
         console.log("Periodic photo capture started.");
+        // Take first picture immediately
+        setTimeout(() => setPhotoCount(1), 100);
 
         toast({
             title: "Live Capture Started",
@@ -116,6 +128,12 @@ export default function DriverSafetyPage() {
             startCapturing();
         }, 2000);
     };
+
+    const formatDuration = (seconds: number) => {
+        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const secs = (seconds % 60).toString().padStart(2, '0');
+        return `${mins}:${secs}`;
+    }
 
     return (
         <div className="flex flex-col min-h-screen bg-background">
@@ -148,21 +166,50 @@ export default function DriverSafetyPage() {
                         {sosState === 'capturing' && <><CheckCircle className="mr-2"/> Alert Confirmed</>}
                     </Button>
                 </Card>
-
-                 <div className="mt-8 space-y-4 text-left">
-                    <h2 className="text-xl font-bold">Live Feed</h2>
-                    <div className="aspect-video w-full rounded-md bg-muted overflow-hidden flex items-center justify-center">
-                        <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
+                 
+                 {sosState === 'capturing' && (
+                    <div className="mt-8 space-y-4 text-left">
+                        <h2 className="text-xl font-bold">Live Capture Status</h2>
+                        <Card>
+                            <CardContent className="p-4 flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <Mic className="w-8 h-8 text-primary"/>
+                                    <div>
+                                        <p className="font-semibold">Capturing Audio</p>
+                                        <p className="text-sm text-muted-foreground">Recording in progress...</p>
+                                    </div>
+                                </div>
+                                <p className="font-mono text-lg">{formatDuration(audioDuration)}</p>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardContent className="p-4 flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <Camera className="w-8 h-8 text-primary"/>
+                                    <div>
+                                        <p className="font-semibold">Taking Pictures</p>
+                                        <p className="text-sm text-muted-foreground">Photos are taken every 10 seconds.</p>
+                                    </div>
+                                </div>
+                                <p className="font-mono text-lg">{photoCount}</p>
+                            </CardContent>
+                        </Card>
                     </div>
-                    {!hasPermissions && (
-                        <Alert variant="destructive">
+                )}
+
+                 {/* Hidden video element for capturing frames */}
+                 <video ref={videoRef} className="absolute w-px h-px opacity-0 -z-10" autoPlay muted playsInline />
+
+                {!hasPermissions && sosState !== 'capturing' && (
+                    <div className="mt-8 space-y-4 text-left">
+                         <Alert variant="destructive">
                             <AlertTitle>Permissions Required</AlertTitle>
                             <AlertDescription>
                                 Please grant camera and microphone access in your browser settings to enable all safety features.
                             </AlertDescription>
                         </Alert>
-                    )}
-                </div>
+                    </div>
+                )}
 
                 <div className="mt-8 space-y-4 text-left">
                     <h2 className="text-xl font-bold">Safety Toolkit</h2>
