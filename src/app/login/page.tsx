@@ -40,9 +40,9 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md border-0 md:border shadow-none md:shadow-lg">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold text-primary">Driver & Admin Login</CardTitle>
+            <CardTitle className="text-3xl font-bold text-primary">Driver Login</CardTitle>
             <CardDescription>
-              Log in to your FemGo account.
+              Log in to your FemGo driver account.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -50,7 +50,7 @@ export default function LoginPage() {
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="email">Email Address</Label>
                     <Input id="email" type="email" placeholder="you@example.com" defaultValue="driver@femgo.com" onChange={(e) => setEmail(e.target.value)} />
-                    <p className='text-xs text-muted-foreground'>Use "driver@femgo.com" or "admin@femgo.com" to access dashboards.</p>
+                    <p className='text-xs text-muted-foreground'>Use "driver@femgo.com" to access the driver dashboard.</p>
                 </div>
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="password">Password</Label>
