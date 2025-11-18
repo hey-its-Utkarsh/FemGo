@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircleDollarSign, CheckCircle, Car, AlertTriangle, Phone, MessageSquare, Navigation, Shield, UserX, Check, X } from "lucide-react";
+import { CircleDollarSign, CheckCircle, Car, AlertTriangle, Phone, MessageSquare, Navigation, Shield, UserX, Check, X, LogOut } from "lucide-react";
 import ridesData from '@/data/rides.json';
 import usersData from '@/data/users.json';
 import { useState, useEffect, useRef } from "react";
@@ -31,6 +31,7 @@ const getPassengerDetails = (passengerId: string) => {
     
     // Generate a fixed, pseudo-random large number based on the passenger's ID
     const getStableRandomNumber = (id: string) => {
+        if (!id) return 0;
         const num = parseInt(id.replace(/[^0-9]/g, ''), 10) || 0;
         return 50 + (num * 37 % 150); // Generates a number between 50 and 200
     };
@@ -127,8 +128,10 @@ export default function DriverDashboard() {
             setRideRequests([]); // Clear old requests
             usedRequestIndices = new Set(); // Reset used indices when going online
             setTimeout(() => {
-                simulateNewRequest();
-                newRequestIntervalRef.current = setInterval(simulateNewRequest, 17000);
+                if (isOnline) { // Re-check if still online
+                    simulateNewRequest();
+                    newRequestIntervalRef.current = setInterval(simulateNewRequest, 17000);
+                }
             }, 1000);
         } else {
             stopNotificationSound();
@@ -270,9 +273,16 @@ export default function DriverDashboard() {
                         {isOnline ? 'You are online and ready for rides.' : 'You are offline.'}
                     </p>
                 </div>
-                 <div className="flex items-center space-x-2">
-                    <Switch id="online-status" checked={isOnline} onCheckedChange={setIsOnline} />
-                    <Label htmlFor="online-status" className="text-lg">{isOnline ? 'Online' : 'Offline'}</Label>
+                 <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <Switch id="online-status" checked={isOnline} onCheckedChange={setIsOnline} />
+                      <Label htmlFor="online-status" className="text-lg">{isOnline ? 'Online' : 'Offline'}</Label>
+                    </div>
+                    <Link href="/">
+                      <Button variant="ghost" size="icon">
+                        <LogOut />
+                      </Button>
+                    </Link>
                 </div>
             </div>
         </header>
@@ -378,12 +388,10 @@ export default function DriverDashboard() {
         
         <footer className="border-t border-border p-2 bg-card">
             <div className="grid grid-cols-3 gap-2">
-                <Link href="/driver" passHref>
-                    <Button variant="ghost" className={`flex-col h-16 w-full ${activeTab === 'requests' ? 'text-primary' : 'text-muted-foreground'}`} onClick={() => setActiveTab('requests')}>
-                        <Car/>
-                        <span>Home</span>
-                    </Button>
-                </Link>
+                <Button variant="ghost" className={`flex-col h-16 w-full ${activeTab === 'requests' ? 'text-primary' : 'text-muted-foreground'}`} onClick={() => setActiveTab('requests')}>
+                    <Car/>
+                    <span>Home</span>
+                </Button>
                 <Button variant="ghost" className={`flex-col h-16 w-full ${activeTab === 'completed' ? 'text-primary' : 'text-muted-foreground'}`} onClick={() => setActiveTab('completed')}>
                     <CheckCircle/>
                     <span>Rides</span>
@@ -399,3 +407,5 @@ export default function DriverDashboard() {
     </div>
   );
 }
+
+    
