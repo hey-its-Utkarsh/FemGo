@@ -276,13 +276,15 @@ export default function PassengerSignupPage() {
                       <AlertDialogHeader>
                       <AlertDialogTitle>Facial Verification Instructions</AlertDialogTitle>
                       <AlertDialogDescription>
-                          To ensure security, we need to capture three photos of your profile:
-                          <ul className='list-disc list-inside mt-2'>
-                          <li>1. A clear photo of your **front profile**.</li>
-                          <li>2. A photo of your **left profile**.</li>
-                          <li>3. A photo of your **right profile**.</li>
-                          </ul>
-                          Please make sure you are in a well-lit area.
+                        
+                            To ensure security, we need to capture three photos of your profile:
+                            <ul className='list-disc list-inside mt-2'>
+                            <li>1. A clear photo of your **front profile**.</li>
+                            <li>2. A photo of your **left profile**.</li>
+                            <li>3. A photo of your **right profile**.</li>
+                            </ul>
+                            Please make sure you are in a well-lit area.
+                        
                       </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
