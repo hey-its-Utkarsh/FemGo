@@ -29,7 +29,7 @@ export default function SosMonitoringPage() {
         <nav className="flex-1 p-4 space-y-2">
             {menuItems.map(item => (
                 <Link key={item.href} href={item.href}>
-                    <span className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-primary ${item.href.includes('sos') ? 'bg-accent text-primary' : ''}`}>
+                    <span className={`flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary ${item.href.includes('sos') ? 'bg-accent text-primary' : ''}`}>
                         <item.icon className="h-5 w-5" />
                         {item.title}
                     </span>
@@ -38,7 +38,7 @@ export default function SosMonitoringPage() {
         </nav>
         <div className="p-4 border-t">
             <Link href="/admin/settings">
-                 <span className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-accent hover:text-primary">
+                 <span className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
                     <Settings className="h-5 w-5" />
                     Settings
                 </span>
@@ -81,7 +81,9 @@ export default function SosMonitoringPage() {
                       <TableCell>{sos.rideId}</TableCell>
                       <TableCell>{sos.location}</TableCell>
                       <TableCell>
-                          <Button variant="destructive" size="sm">View Details</Button>
+                          <Button asChild variant="destructive" size="sm">
+                            <Link href={`/admin/sos/${sos.id}`}>View Details</Link>
+                          </Button>
                       </TableCell>
                     </TableRow>
                   ))}
