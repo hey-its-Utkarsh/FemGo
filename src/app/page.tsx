@@ -6,7 +6,7 @@ import Header from '@/components/femgo/layout/Header';
 import { ShieldCheck, Users, Car, UserCog } from 'lucide-react';
 
 export default function FemGoHome() {
-  const heroImage = "https://images.unsplash.com/photo-1531384370597-859694295460?q=80&w=1770&auto=format&fit=crop";
+  const heroImage = "https://images.unsplash.com/photo-1574638202922-491b415ac707?q=80&w=1771&auto=format&fit=crop";
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
