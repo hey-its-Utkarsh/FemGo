@@ -69,6 +69,8 @@ export default function DriverDashboard() {
     };
 
     const simulateNewRequest = () => {
+        if (!isOnline || activeRide) return; // Do not simulate if offline or on a ride
+
         if (usedRequestIndices.size >= allRideRequests.length) {
             usedRequestIndices.clear(); // Reset if all requests have been shown
         }
@@ -81,7 +83,7 @@ export default function DriverDashboard() {
         usedRequestIndices.add(newRequestIndex);
         const newRequest = allRideRequests[newRequestIndex];
 
-        if (newRequest && !activeRide && rideRequests.every(r => r.id !== newRequest.id)) { // Only add requests if no ride is active and not already present
+        if (newRequest && rideRequests.every(r => r.id !== newRequest.id)) { // Only add requests if not already present
             playNotificationSound();
             setRideRequests(prev => [...prev, { ...newRequest, timeLeft: REQUEST_TIMEOUT_SECONDS }]);
             const passenger = getPassengerDetails(newRequest.passengerId);
