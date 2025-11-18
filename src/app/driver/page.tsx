@@ -43,7 +43,7 @@ const getPassengerDetails = (passengerId: string) => {
 };
 
 export default function DriverDashboard() {
-    const [isOnline, setIsOnline] = useState(true);
+    const [isOnline, setIsOnline] = useState(false);
     const [rideRequests, setRideRequests] = useState<RideRequestWithTimer[]>([]);
     const [completedRides, setCompletedRides] = useState(initialCompletedRides);
     const [activeRide, setActiveRide] = useState<ActiveRide | null>(null);
