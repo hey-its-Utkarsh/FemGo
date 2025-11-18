@@ -1,3 +1,4 @@
+
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,18 +28,18 @@ export default function AdminLoginPage() {
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold text-primary">Admin Login</CardTitle>
             <CardDescription>
-              Access the FemGo administration panel.
+              Access the SafeHer administration panel.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="flex flex-col gap-6">
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="admin@example.com" required />
+                    <Input id="email" type="email" placeholder="admin@example.com" required defaultValue="admin@safeher.com"/>
                 </div>
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" placeholder="••••••••" required />
+                    <Input id="password" type="password" placeholder="••••••••" required defaultValue="password" />
                 </div>
                 <Button type="submit" size="lg" className="w-full text-lg py-6">Login</Button>
             </form>
