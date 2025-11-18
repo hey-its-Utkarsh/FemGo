@@ -12,6 +12,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
 import Link from 'next/link';
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const driverId = "driver001"; // Assuming this is the logged-in driver
 const REQUEST_TIMEOUT_SECONDS = 15;
@@ -265,9 +267,10 @@ export default function DriverDashboard() {
                         {isOnline ? 'You are online and ready for rides.' : 'You are offline.'}
                     </p>
                 </div>
-                 <Button variant={isOnline ? "secondary" : "default"} onClick={() => setIsOnline(!isOnline)}>
-                    {isOnline ? 'Go Offline' : 'Go Online'}
-                 </Button>
+                 <div className="flex items-center space-x-2">
+                    <Switch id="online-status" checked={isOnline} onCheckedChange={setIsOnline} />
+                    <Label htmlFor="online-status" className="text-lg">{isOnline ? 'Online' : 'Offline'}</Label>
+                </div>
             </div>
         </header>
 
