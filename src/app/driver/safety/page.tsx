@@ -21,7 +21,7 @@ export default function DriverSafetyPage() {
 
     return (
         <div className="flex flex-col min-h-screen bg-background">
-            <MobileHeader title="Safety Center" backPath="/driver" />
+            <MobileHeader title="Safety Center" />
             <main className="flex-1 p-4 text-center">
                 <Card className={`p-6 transition-all duration-300 ${sosState === 'sent' ? 'bg-green-50 dark:bg-green-900/20 border-green-500' : 'bg-red-50 dark:bg-red-900/20 border-destructive'}`}>
                     {sosState === 'idle' && <ShieldAlert className="w-16 h-16 text-destructive mx-auto" />}
