@@ -26,7 +26,7 @@ export default function RideLogsPage() {
       {/* Sidebar */}
        <aside className="w-64 bg-white dark:bg-card shadow-md flex-col hidden md:flex">
         <div className="h-20 flex items-center justify-center border-b">
-          <Link href="/" className="text-2xl font-bold text-primary">SafeHer Admin</Link>
+          <Link href="/admin" className="text-2xl font-bold text-primary">SafeHer Admin</Link>
         </div>
         <nav className="flex-1 p-4 space-y-2">
             {menuItems.map(item => (
