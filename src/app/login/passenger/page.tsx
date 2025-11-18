@@ -1,4 +1,3 @@
-
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,9 +25,7 @@ export default function PassengerLoginPage() {
     }
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <div className='md:hidden'>
-        <MobileHeader title="Passenger Login" backPath="/" />
-      </div>
+      <MobileHeader title="Passenger Login" backPath="/" />
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md border-0 md-border shadow-none md:shadow-lg">
           <CardHeader className="text-center">
@@ -41,7 +38,7 @@ export default function PassengerLoginPage() {
             <form onSubmit={handleLogin} className="flex flex-col gap-6">
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="you@example.com" onChange={(e) => setEmail(e.target.value)} />
+                    <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="password">Password</Label>
