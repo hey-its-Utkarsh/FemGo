@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 import Image from 'next/image';
 
 type SignupStep = 'details' | 'voice' | 'face' | 'verifying' | 'complete' | 'failed';
-type VoiceStep = 'idle' | 'recording' | 'recorded';
+type VoiceStep = 'instructions' | 'idle' | 'recording' | 'recorded';
 type FaceStep = 'instructions' | 'capturing' | 'captured';
 type FaceProfile = 'front' | 'left' | 'right';
 
@@ -43,7 +43,7 @@ const voicePrompts = [
 
 export default function DriverSignupPage() {
   const [step, setStep] = useState<SignupStep>('details');
-  const [voiceSubStep, setVoiceSubStep] = useState<VoiceStep>('idle');
+  const [voiceSubStep, setVoiceSubStep] = useState<VoiceStep>('instructions');
   const [faceSubStep, setFaceSubStep] = useState<FaceStep>('instructions');
   const [progress, setProgress] = useState(0);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
@@ -175,7 +175,7 @@ export default function DriverSignupPage() {
     setCapturedPhotos({ front: null, left: null, right: null });
     setCurrentProfile('front');
     setFaceSubStep('instructions');
-    setVoiceSubStep('idle');
+    setVoiceSubStep('instructions');
     setStep('details');
   };
 
@@ -257,6 +257,27 @@ export default function DriverSignupPage() {
       case 'voice':
         return (
           <>
+            <AlertDialog open={voiceSubStep === 'instructions'} onOpenChange={(open) => !open && setVoiceSubStep('idle')}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Voice Verification Instructions</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            <div className="flex flex-col items-center text-center gap-4">
+                                <div className="relative w-24 h-24">
+                                    <Mic className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 text-primary" />
+                                    <svg className="w-full h-full animate-pulse" viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="40" stroke="hsl(var(--primary))" strokeWidth="2" fill="none" strokeDasharray="5 10" />
+                                    </svg>
+                                </div>
+                                <p>To verify your voice, you will be asked to read a short phrase out loud. Please ensure you are in a quiet environment.</p>
+                            </div>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogAction onClick={() => setVoiceSubStep('idle')}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
             <CardTitle>Voice Verification (Step 2/3)</CardTitle>
             <CardDescription className='pt-2'>Press the button and clearly say:</CardDescription>
             <p className='text-lg font-semibold text-primary py-4'>"{voicePrompt}"</p>
@@ -291,21 +312,28 @@ export default function DriverSignupPage() {
              <AlertDialog open={faceSubStep === 'instructions'} onOpenChange={(open) => !open && setFaceSubStep('capturing')}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                    <AlertDialogTitle>Facial Verification Instructions</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        
-                        To ensure security, we need to capture three photos of your profile:
-                        <ul className='list-disc list-inside mt-2'>
-                        <li>1. A clear photo of your **front profile**.</li>
-                        <li>2. A photo of your **left profile**.</li>
-                        <li>3. A photo of your **right profile**.</li>
-                        </ul>
-                        Please make sure you are in a well-lit area.
-                        
-                    </AlertDialogDescription>
+                        <AlertDialogTitle>Facial Verification Instructions</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            <div className='flex flex-col items-center text-center gap-4'>
+                                <div className="relative flex items-center justify-center w-24 h-24">
+                                    <User className="w-12 h-12 text-primary" />
+                                    <ChevronLeft className="absolute left-0 top-1/2 -translate-y-1/2 w-8 h-8 text-primary/70 animate-ping" style={{animationDelay: '0.5s'}} />
+                                    <ChevronRight className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 text-primary/70 animate-ping" style={{animationDelay: '1s'}} />
+                                </div>
+                                <div>
+                                    To ensure security, we need to capture three photos of your profile:
+                                    <ul className='list-disc list-inside mt-2'>
+                                    <li>A clear photo of your **front profile**.</li>
+                                    <li>A photo of your **left profile**.</li>
+                                    <li>A photo of your **right profile**.</li>
+                                    </ul>
+                                    Please make sure you are in a well-lit area.
+                                </div>
+                            </div>
+                        </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                    <AlertDialogAction onClick={() => setFaceSubStep('capturing')}>Continue</AlertDialogAction>
+                        <AlertDialogAction onClick={() => setFaceSubStep('capturing')}>Continue</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
@@ -390,3 +418,5 @@ export default function DriverSignupPage() {
     </div>
   );
 }
+
+    
