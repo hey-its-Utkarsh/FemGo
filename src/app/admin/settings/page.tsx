@@ -22,7 +22,7 @@ export default function SettingsPage() {
       {/* Sidebar */}
        <aside className="w-64 bg-card shadow-md flex-col hidden md:flex">
         <div className="h-20 flex items-center justify-center border-b">
-          <Link href="/admin" className="text-2xl font-bold text-primary">SafeHer Admin</Link>
+          <Link href="/admin" className="text-2xl font-bold text-primary">FemGo Admin</Link>
         </div>
         <nav className="flex-1 p-4 space-y-2">
             {menuItems.map(item => (
@@ -68,7 +68,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" defaultValue="admin@safeher.com" />
+                  <Input id="email" type="email" defaultValue="admin@femgo.com" />
                 </div>
                 <Button>Update Profile</Button>
               </CardContent>

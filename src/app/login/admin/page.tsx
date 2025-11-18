@@ -28,14 +28,14 @@ export default function AdminLoginPage() {
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold text-primary">Admin Login</CardTitle>
             <CardDescription>
-              Access the SafeHer administration panel.
+              Access the FemGo administration panel.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="flex flex-col gap-6">
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="admin@example.com" required defaultValue="admin@safeher.com"/>
+                    <Input id="email" type="email" placeholder="admin@example.com" required defaultValue="admin@femgo.com"/>
                 </div>
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="password">Password</Label>

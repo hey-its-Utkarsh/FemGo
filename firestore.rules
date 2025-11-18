@@ -1,5 +1,6 @@
+
 /**
- * @fileoverview Firestore Security Rules for SafeHer Rides
+ * @fileoverview Firestore Security Rules for FemGo
  *
  * Core Philosophy: This ruleset enforces a user-ownership model for personal data (emergency contacts, locations) stored under `/users/{userId}`. Ride requests are secured based on the `passengerId` and `driverId` fields within the request documents, allowing for role-based access.
  *
