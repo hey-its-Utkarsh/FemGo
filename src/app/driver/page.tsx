@@ -26,7 +26,9 @@ let usedRequestIndices = new Set<number>();
 
 const getPassengerDetails = (passengerId: string) => {
     const passenger = usersData.find(user => user.id === passengerId);
-    return passenger || { name: "Unknown Passenger", id: "unknown", phone: "N/A" };
+    // Add a random ride count for simulation
+    const rideCount = Math.floor(Math.random() * 50) + 1;
+    return passenger ? { ...passenger, rideCount } : { name: "Unknown Passenger", id: "unknown", phone: "N/A", verificationStatus: "unverified", rideCount: 0 };
 };
 
 export default function DriverDashboard() {
@@ -68,7 +70,7 @@ export default function DriverDashboard() {
         usedRequestIndices.add(newRequestIndex);
         const newRequest = allRideRequests[newRequestIndex];
 
-        if (newRequest && !activeRide) { // Only add requests if no ride is active
+        if (newRequest && !activeRide && rideRequests.every(r => r.id !== newRequest.id)) { // Only add requests if no ride is active and not already present
             playNotificationSound();
             setRideRequests(prev => [...prev, { ...newRequest, timeLeft: REQUEST_TIMEOUT_SECONDS }]);
             const passenger = getPassengerDetails(newRequest.passengerId);
@@ -294,7 +296,16 @@ export default function DriverDashboard() {
                                         </Avatar>
                                         <div>
                                             <p className="font-bold text-card-foreground">{passenger.name}</p>
-                                            <p className="text-sm text-muted-foreground">2.5 mi away</p>
+                                            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                                                {passenger.verificationStatus === 'verified' && (
+                                                    <span className="flex items-center gap-1 text-green-500">
+                                                        <CheckCircle className="w-3 h-3" />
+                                                        Verified Profile
+                                                    </span>
+                                                )}
+                                                <span>•</span>
+                                                <span>{passenger.rideCount} Rides</span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="text-right space-y-2">
@@ -370,7 +381,3 @@ export default function DriverDashboard() {
     </div>
   );
 }
-
-    
-
-    
