@@ -9,6 +9,7 @@ import driversData from '@/data/drivers.json';
 import complaintsData from '@/data/complaints.json';
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
+import { useState } from "react";
 
 const menuItems = [
     { title: "User Management", href: "/admin/users", icon: Users },
@@ -18,18 +19,30 @@ const menuItems = [
     { title: "Analytics", href: "/admin/analytics", icon: BarChart3 },
 ];
 
-const pendingDrivers = driversData.filter(d => d.verificationStatus === 'pending');
+export default function DriverManagementPage() {
+  const [drivers, setDrivers] = useState(driversData);
 
-const getDriverComplaints = (driverId: string) => {
+  const getDriverComplaints = (driverId: string) => {
     return complaintsData.filter(c => c.driverId === driverId).length;
-}
+  }
 
-const verifiedDrivers = driversData
+  const pendingDrivers = drivers.filter(d => d.verificationStatus === 'pending');
+  const verifiedDrivers = drivers
     .filter(d => d.verificationStatus !== 'pending')
     .sort((a, b) => getDriverComplaints(b.id) - getDriverComplaints(a.id));
 
+  const handleApproveDriver = (driverId: string) => {
+    setDrivers(prevDrivers => 
+      prevDrivers.map(driver => 
+        driver.id === driverId ? { ...driver, verificationStatus: 'verified' } : driver
+      )
+    );
+  };
 
-export default function DriverManagementPage() {
+  const handleRejectDriver = (driverId: string) => {
+    setDrivers(prevDrivers => prevDrivers.filter(driver => driver.id !== driverId));
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-100 dark:bg-background">
       {/* Sidebar */}
@@ -99,8 +112,8 @@ export default function DriverManagementPage() {
                         </div>
                       </div>
                       <div className="flex gap-4 pt-4">
-                        <Button className="w-full bg-green-600 hover:bg-green-700"><CheckCircle className="mr-2"/> Approve</Button>
-                        <Button variant="destructive" className="w-full"><XCircle className="mr-2"/> Reject</Button>
+                        <Button className="w-full bg-green-600 hover:bg-green-700" onClick={() => handleApproveDriver(driver.id)}><CheckCircle className="mr-2"/> Approve</Button>
+                        <Button variant="destructive" className="w-full" onClick={() => handleRejectDriver(driver.id)}><XCircle className="mr-2"/> Reject</Button>
                       </div>
                     </CardContent>
                   </Card>

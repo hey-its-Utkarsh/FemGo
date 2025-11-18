@@ -9,6 +9,7 @@ import usersData from '@/data/users.json';
 import complaintsData from '@/data/complaints.json';
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useState } from "react";
 
 const menuItems = [
     { title: "User Management", href: "/admin/users", icon: Users },
@@ -18,18 +19,31 @@ const menuItems = [
     { title: "Analytics", href: "/admin/analytics", icon: BarChart3 },
 ];
 
-const pendingUsers = usersData.filter(u => u.verificationStatus === 'pending');
+export default function UserManagementPage() {
+  const [users, setUsers] = useState(usersData);
 
-const getPassengerComplaints = (passengerId: string) => {
+  const getPassengerComplaints = (passengerId: string) => {
     return complaintsData.filter(c => c.passengerId === passengerId && c.complainant === 'driver').length;
-}
-
-const verifiedUsers = usersData
+  }
+  
+  const pendingUsers = users.filter(u => u.verificationStatus === 'pending');
+  const verifiedUsers = users
     .filter(u => u.verificationStatus !== 'pending')
     .sort((a, b) => getPassengerComplaints(b.id) - getPassengerComplaints(a.id));
 
+  const handleApproveUser = (userId: string) => {
+    setUsers(prevUsers => 
+      prevUsers.map(user => 
+        user.id === userId ? { ...user, verificationStatus: 'verified' } : user
+      )
+    );
+  };
 
-export default function UserManagementPage() {
+  const handleRejectUser = (userId: string) => {
+    setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+  };
+
+
   return (
     <div className="flex min-h-screen bg-gray-100 dark:bg-background">
       {/* Sidebar */}
@@ -100,8 +114,8 @@ export default function UserManagementPage() {
                         </div>
                       </div>
                       <div className="flex gap-4 pt-4">
-                        <Button className="w-full bg-green-600 hover:bg-green-700"><CheckCircle className="mr-2"/> Approve</Button>
-                        <Button variant="destructive" className="w-full"><XCircle className="mr-2"/> Reject</Button>
+                        <Button className="w-full bg-green-600 hover:bg-green-700" onClick={() => handleApproveUser(user.id)}><CheckCircle className="mr-2"/> Approve</Button>
+                        <Button variant="destructive" className="w-full" onClick={() => handleRejectUser(user.id)}><XCircle className="mr-2"/> Reject</Button>
                       </div>
                     </CardContent>
                   </Card>
