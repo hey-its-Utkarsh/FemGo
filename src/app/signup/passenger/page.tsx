@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 import Image from 'next/image';
 
 type SignupStep = 'details' | 'voice' | 'face' | 'verifying' | 'complete' | 'failed';
-type VoiceStep = 'instructions' | 'idle' | 'recording' | 'recorded';
+type VoiceStep = 'instructions' | 'idle' | 'recording' | 'recorded' | 'analyzing' | 'analyzed';
 type FaceStep = 'instructions' | 'capturing' | 'captured';
 type FaceProfile = 'front' | 'left' | 'right';
 
@@ -50,6 +50,7 @@ export default function PassengerSignupPage() {
   const [voicePrompt, setVoicePrompt] = useState('');
   const [capturedPhotos, setCapturedPhotos] = useState<Record<FaceProfile, string | null>>({ front: null, left: null, right: null });
   const [currentProfile, setCurrentProfile] = useState<FaceProfile>('front');
+  const [recordingTime, setRecordingTime] = useState(0);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -85,17 +86,27 @@ export default function PassengerSignupPage() {
 
   const handleVoiceStart = () => {
     setVoiceSubStep('recording');
-    recordingTimerRef.current = setTimeout(() => {
-      setVoiceSubStep('recorded');
-    }, 3000); // Simulate 3 seconds of recording
+    setRecordingTime(0);
+    recordingTimerRef.current = setInterval(() => {
+      setRecordingTime(prev => prev + 1);
+    }, 1000);
+  };
+
+  const handleVoiceStop = () => {
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+    }
+    setVoiceSubStep('recorded');
   };
 
   const handleVoiceSubmit = () => {
-    setStep('verifying');
-    setProgress(30);
-    const voiceMessages = verificationSteps.slice(0, 5);
-    updateVerificationStatus(voiceMessages, 'face', true, 60, null);
+    setVoiceSubStep('analyzing');
+    // Simulate analysis
+    setTimeout(() => {
+        setVoiceSubStep('analyzed');
+    }, 2000);
   };
+
 
   const startCamera = async () => {
       try {
@@ -116,15 +127,21 @@ export default function PassengerSignupPage() {
   };
 
   useEffect(() => {
-    if (step === 'voice') {
+    if (step === 'voice' && voiceSubStep === 'idle') {
       setVoicePrompt(voicePrompts[Math.floor(Math.random() * voicePrompts.length)]);
     }
 
     if (step === 'face' && faceSubStep === 'capturing') {
       startCamera();
     }
+
+    return () => {
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+      }
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, faceSubStep]);
+  }, [step, faceSubStep, voiceSubStep]);
 
   const handleCapturePhoto = () => {
     if (!videoRef.current) return;
@@ -264,25 +281,45 @@ export default function PassengerSignupPage() {
             <CardTitle>Voice Verification (Step 2/3)</CardTitle>
             <CardDescription className='pt-2'>Press the button and clearly say:</CardDescription>
             <p className='text-lg font-semibold text-primary py-4'>"{voicePrompt}"</p>
-            <div className="py-4 flex justify-center">
+             <div className="py-4 flex flex-col items-center justify-center gap-4 w-full">
               {voiceSubStep === 'idle' && (
-                <Button size="icon" className="w-24 h-24 rounded-full bg-primary hover:bg-primary/90" onClick={handleVoiceStart}>
-                  <Mic size={48} />
+                <Button size="lg" className="w-full" onClick={handleVoiceStart}>
+                  <Mic className="mr-2" /> Start Recording
                 </Button>
               )}
               {voiceSubStep === 'recording' && (
-                 <Button size="icon" className="w-24 h-24 rounded-full bg-red-500 cursor-not-allowed" disabled>
-                  <Mic size={48} className='animate-pulse' />
-                </Button>
+                <>
+                  <div className="font-mono text-2xl text-primary">{new Date(recordingTime * 1000).toISOString().substr(14, 5)}</div>
+                  <Button size="lg" className="w-full" variant="destructive" onClick={handleVoiceStop}>
+                    <Mic className="mr-2 animate-pulse" /> Stop Recording
+                  </Button>
+                </>
               )}
               {voiceSubStep === 'recorded' && (
                 <div className='flex flex-col items-center gap-4 w-full'>
-                    <p className='text-green-500 flex items-center gap-2'><Check /> Recording Complete</p>
+                    <p className='text-green-500 flex items-center gap-2'><Check /> Recording Complete ({recordingTime}s)</p>
                     <Button size="lg" className="w-full" onClick={handleVoiceSubmit}>
                         Submit for Analysis
                     </Button>
                      <Button size="lg" variant="outline" className="w-full" onClick={() => setVoiceSubStep('idle')}>
                         Record Again
+                    </Button>
+                </div>
+              )}
+              {voiceSubStep === 'analyzing' && (
+                <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                  <Loader2 size={32} className="animate-spin text-primary" />
+                  <p>Analyzing voice signature...</p>
+                </div>
+              )}
+              {voiceSubStep === 'analyzed' && (
+                <div className='flex flex-col items-center gap-4 w-full text-center'>
+                    <div className='p-4 rounded-lg bg-green-500/10 border border-green-500/30 w-full'>
+                        <ShieldCheck className='w-12 h-12 text-green-500 mx-auto' />
+                        <p className='font-semibold text-green-500 mt-2'>Voice Signature Confirmed</p>
+                    </div>
+                    <Button size="lg" className="w-full" onClick={() => { setProgress(60); setStep('face') }}>
+                        Continue to Facial Scan
                     </Button>
                 </div>
               )}
@@ -401,5 +438,3 @@ export default function PassengerSignupPage() {
     </div>
   );
 }
-
-    
