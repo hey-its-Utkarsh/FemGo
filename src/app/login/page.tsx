@@ -65,7 +65,7 @@ export default function LoginPage() {
                 </p>
                  <p className="text-center text-sm text-muted-foreground">
                     Don't have an account?{' '}
-                    <Link href="/signup" className="font-semibold text-primary hover:underline">
+                    <Link href="/signup/driver" className="font-semibold text-primary hover:underline">
                         Sign Up
                     </Link>
                 </p>

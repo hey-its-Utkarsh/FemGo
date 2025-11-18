@@ -38,7 +38,7 @@ export default function FemGoHome() {
                   <Link href="/login/passenger">Book a Ride</Link>
                 </Button>
                 <Button asChild variant="secondary" size="lg" className="text-lg">
-                  <Link href="/signup/driver">Drive with Us</Link>
+                  <Link href="/login">Drive with Us</Link>
                 </Button>
               </div>
             </div>
