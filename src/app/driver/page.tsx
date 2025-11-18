@@ -26,9 +26,18 @@ let usedRequestIndices = new Set<number>();
 
 const getPassengerDetails = (passengerId: string) => {
     const passenger = usersData.find(user => user.id === passengerId);
-    // Set ride count to 1 for all passengers
-    const rideCount = 1;
-    return passenger ? { ...passenger, rideCount } : { name: "Unknown Passenger", id: "unknown", phone: "N/A", verificationStatus: "unverified", rideCount: 0 };
+    
+    // Generate a fixed, pseudo-random large number based on the passenger's ID
+    const getStableRandomNumber = (id: string) => {
+        const num = parseInt(id.replace(/[^0-9]/g, ''), 10) || 0;
+        return 50 + (num * 37 % 150); // Generates a number between 50 and 200
+    };
+
+    const rideCount = passenger ? getStableRandomNumber(passenger.id) : 0;
+    
+    return passenger 
+        ? { ...passenger, rideCount } 
+        : { name: "Unknown Passenger", id: "unknown", phone: "N/A", verificationStatus: "unverified", rideCount: 0 };
 };
 
 export default function DriverDashboard() {
@@ -304,7 +313,7 @@ export default function DriverDashboard() {
                                                     </span>
                                                 )}
                                                 <span>•</span>
-                                                <span>{passenger.rideCount} Ride</span>
+                                                <span>{passenger.rideCount} Ride{passenger.rideCount === 1 ? '' : 's'}</span>
                                             </div>
                                         </div>
                                     </div>
