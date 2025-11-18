@@ -90,7 +90,7 @@ export default function DriverManagementPage() {
                           <Button variant="outline" className="w-full">Play Voice Sample</Button>
                         </div>
                         <div>
-                          <h4 className="font-semibold mb-2 flex items-center gap-2"><Camera/> Profile Photos</h4>
+                          <h4 className="font-semibold mb-2 flex items-center gap-2"><Camera/> Submitted Photos</h4>
                           <div className="flex gap-2">
                             <Image src={driver.signupData.photos.front} alt="Front profile" width={60} height={60} className="rounded-md" data-ai-hint="woman portrait" />
                             <Image src={driver.signupData.photos.left} alt="Left profile" width={60} height={60} className="rounded-md" data-ai-hint="woman profile" />
