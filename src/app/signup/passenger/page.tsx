@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { dummySpeechSafety, dummyFaceVerification } from '@/lib/ai-simulation';
 import MobileHeader from '@/components/femgo/layout/MobileHeader';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
@@ -16,13 +15,48 @@ import { Label } from '@/components/ui/label';
 
 type SignupStep = 'details' | 'voice' | 'face' | 'verifying' | 'complete' | 'failed';
 
+const verificationSteps = [
+    "Initializing verification sequence...",
+    "Establishing secure connection...",
+    "Analyzing vocal patterns...",
+    "Checking for stress indicators...",
+    "Voice signature confirmed.",
+    "Activating camera...",
+    "Detecting facial landmarks...",
+    "Cross-referencing facial data...",
+    "Verifying gender...",
+    "Finalizing identity check...",
+];
+
 export default function PassengerSignupPage() {
   const [step, setStep] = useState<SignupStep>('details');
   const [progress, setProgress] = useState(0);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [verificationStatusText, setVerificationStatusText] = useState('');
   const videoRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
   const { toast } = useToast();
+
+   const updateVerificationStatus = (messages: string[], finalStep: SignupStep, success: boolean, successProgress: number, failureToast: any) => {
+    let messageIndex = 0;
+    const interval = setInterval(() => {
+        if (messageIndex < messages.length) {
+            setVerificationStatusText(messages[messageIndex]);
+            setProgress(p => Math.min(p + 5, successProgress - 5));
+            messageIndex++;
+        } else {
+            clearInterval(interval);
+            if (success) {
+                setStep(finalStep);
+                setProgress(successProgress);
+            } else {
+                toast(failureToast);
+                setStep('failed');
+            }
+        }
+    }, 400);
+     return () => clearInterval(interval);
+  };
 
   const handleDetailsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,32 +64,13 @@ export default function PassengerSignupPage() {
     setStep('voice');
   };
 
-  // Step 2: Voice recording simulation
   const handleVoiceStart = () => {
     setStep('verifying');
-    setProgress(35);
-    const interval = setInterval(() => {
-      setProgress(p => (p < 50 ? p + 5 : 50));
-    }, 200);
-
-    setTimeout(async () => {
-      clearInterval(interval);
-      const result: any = await dummySpeechSafety(null);
-      if (!result.detected) { // Assuming not detected means safe to proceed
-        setProgress(60);
-        setStep('face');
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Verification Failed",
-          description: "Safety concern detected in audio. Please try again in a calm environment.",
-        });
-        setStep('failed');
-      }
-    }, 3000);
+    setProgress(30);
+    const voiceMessages = verificationSteps.slice(0, 5);
+    updateVerificationStatus(voiceMessages, 'face', true, 60, null);
   };
 
-  // Step 3: Request camera permission
   useEffect(() => {
     if (step === 'face') {
       const getCameraPermission = async () => {
@@ -80,32 +95,19 @@ export default function PassengerSignupPage() {
     }
   }, [step, toast]);
 
-
-  // Step 4: Face capture and verification
   const handleFaceCapture = async () => {
     setStep('verifying');
-    const interval = setInterval(() => {
-        setProgress(p => (p < 90 ? p + 5 : 90));
-    }, 200);
+    const faceMessages = verificationSteps.slice(5);
+    updateVerificationStatus(faceMessages, 'complete', true, 100, {
+        variant: "destructive",
+        title: "Verification Failed",
+        description: "Could not verify identity.",
+    });
 
-    setTimeout(async () => {
-        clearInterval(interval);
-        const result: any = await dummyFaceVerification(null);
-        if (result.status === "verified") {
-            setProgress(100);
-            setStep('complete');
-            setTimeout(() => router.push('/login'), 3000);
-        } else {
-            toast({
-                variant: "destructive",
-                title: "Verification Failed",
-                description: result.message,
-            });
-            setStep('failed');
-        }
-    }, 3000);
+    setTimeout(() => {
+        router.push('/login/passenger');
+    }, faceMessages.length * 400 + 1000);
 
-    // Stop camera stream after capture
     if (videoRef.current && videoRef.current.srcObject) {
         const stream = videoRef.current.srcObject as MediaStream;
         stream.getTracks().forEach(track => track.stop());
@@ -180,11 +182,11 @@ export default function PassengerSignupPage() {
       case 'verifying':
         return (
           <>
-            <CardTitle>Verifying Your Identity...</CardTitle>
-            <CardDescription>Our AI is analyzing your data. Please wait.</CardDescription>
+            <CardTitle>AI Verification In Progress...</CardTitle>
+            <CardDescription>Our system is securing your profile. Please wait.</CardDescription>
             <div className="py-8 flex justify-center items-center flex-col gap-4">
               <Loader2 size={64} className="animate-spin text-primary" />
-              <p className="text-lg font-semibold">Please wait</p>
+              <p className="text-lg font-semibold min-h-[28px]">{verificationStatusText}</p>
             </div>
           </>
         );
@@ -224,7 +226,7 @@ export default function PassengerSignupPage() {
                 <Progress value={progress} className="w-full" />
                 <p className="text-center text-sm text-muted-foreground mt-4">
                     Already have an account?{' '}
-                    <Link href="/login" className="font-semibold text-primary hover:underline">
+                    <Link href="/login/passenger" className="font-semibold text-primary hover:underline">
                         Log In
                     </Link>
                 </p>
@@ -234,3 +236,5 @@ export default function PassengerSignupPage() {
     </div>
   );
 }
+
+    
