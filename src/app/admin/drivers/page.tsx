@@ -19,11 +19,15 @@ const menuItems = [
 ];
 
 const pendingDrivers = driversData.filter(d => d.verificationStatus === 'pending');
-const verifiedDrivers = driversData.filter(d => d.verificationStatus !== 'pending');
 
 const getDriverComplaints = (driverId: string) => {
     return complaintsData.filter(c => c.driverId === driverId).length;
 }
+
+const verifiedDrivers = driversData
+    .filter(d => d.verificationStatus !== 'pending')
+    .sort((a, b) => getDriverComplaints(b.id) - getDriverComplaints(a.id));
+
 
 export default function DriverManagementPage() {
   return (
