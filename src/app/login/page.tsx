@@ -50,7 +50,6 @@ export default function LoginPage() {
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="email">Email Address</Label>
                     <Input id="email" type="email" placeholder="you@example.com" defaultValue="driver@femgo.com" onChange={(e) => setEmail(e.target.value)} />
-                    <p className='text-xs text-muted-foreground'>Use "driver@femgo.com" to access the driver dashboard or "admin@femgo.com" for admin.</p>
                 </div>
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="password">Password</Label>
