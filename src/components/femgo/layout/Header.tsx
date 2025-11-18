@@ -4,12 +4,12 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, HeartHandshake, LogIn } from 'lucide-react';
+import { Menu, Users, LogIn } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 const FemGoLogo = () => (
   <Link href="/" className="flex items-center space-x-2">
-    <HeartHandshake className="h-7 w-7 text-primary" />
+    <Users className="h-7 w-7 text-primary" />
     <span className="text-2xl font-bold tracking-tight text-primary">FemGo</span>
   </Link>
 );
