@@ -27,12 +27,21 @@ const verificationSteps = [
     "Verifying gender...",
     "Finalizing identity check...",
 ];
+const voicePrompts = [
+  "My voice is my password, verify me.",
+  "The quick brown fox jumps over the lazy dog.",
+  "FemGo ensures safety and empowerment for everyone.",
+  "I am signing up for a safe ride experience.",
+  "Never underestimate the power of a woman."
+];
+
 
 export default function DriverSignupPage() {
   const [step, setStep] = useState<SignupStep>('details');
   const [progress, setProgress] = useState(0);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [verificationStatusText, setVerificationStatusText] = useState('');
+  const [voicePrompt, setVoicePrompt] = useState('');
   const videoRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
   const { toast } = useToast();
@@ -74,6 +83,10 @@ export default function DriverSignupPage() {
 
   // Step 3: Request camera permission
   useEffect(() => {
+    if (step === 'voice') {
+      setVoicePrompt(voicePrompts[Math.floor(Math.random() * voicePrompts.length)]);
+    }
+
     if (step === 'face') {
       const getCameraPermission = async () => {
         try {
@@ -168,7 +181,7 @@ export default function DriverSignupPage() {
           <>
             <CardTitle>Voice Verification (Step 2/3)</CardTitle>
             <CardDescription className='pt-2'>Press the button and clearly say:</CardDescription>
-            <p className='text-lg font-semibold text-primary py-4'>"My voice is my password"</p>
+            <p className='text-lg font-semibold text-primary py-4'>"{voicePrompt}"</p>
             <div className="py-4 flex justify-center">
               <Button size="icon" className="w-24 h-24 rounded-full bg-primary hover:bg-primary/90" onClick={handleVoiceStart}>
                 <Mic size={48} />
@@ -254,5 +267,7 @@ export default function DriverSignupPage() {
     </div>
   );
 }
+
+    
 
     
