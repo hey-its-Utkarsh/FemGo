@@ -17,11 +17,7 @@ const FemGoLogo = () => (
 export default function Header({ appName }: { appName?: string }) {
   const pathname = usePathname();
 
-  const navLinks = [
-    { href: '/passenger', label: 'Passenger' },
-    { href: '/driver', label: 'Driver' },
-    { href: '/admin', label: 'Admin' },
-  ];
+  const navLinks: { href: string; label: string }[] = [];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -34,21 +30,23 @@ export default function Header({ appName }: { appName?: string }) {
             <FemGoLogo />
           </div>
           <div className="flex items-center space-x-2">
-            <nav className="hidden items-center space-x-6 text-base font-medium md:flex">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`transition-colors hover:text-primary ${
-                    pathname.startsWith(link.href)
-                      ? 'text-primary'
-                      : 'text-foreground/60'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
+            {navLinks.length > 0 && (
+              <nav className="hidden items-center space-x-6 text-base font-medium md:flex">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`transition-colors hover:text-primary ${
+                      pathname.startsWith(link.href)
+                        ? 'text-primary'
+                        : 'text-foreground/60'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            )}
             <div className="hidden md:flex items-center gap-4 ml-6">
                 <Button variant="ghost" asChild>
                     <Link href="/login">
@@ -71,21 +69,23 @@ export default function Header({ appName }: { appName?: string }) {
                     <div className="mb-8">
                         <FemGoLogo />
                     </div>
-                    <div className="flex flex-col space-y-4 text-lg font-medium">
-                        {navLinks.map((link) => (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className={`transition-colors hover:text-primary ${
-                                pathname.startsWith(link.href)
-                                ? 'text-primary'
-                                : 'text-foreground/80'
-                            }`}
-                        >
-                            {link.label}
-                        </Link>
-                        ))}
-                    </div>
+                    {navLinks.length > 0 && (
+                      <div className="flex flex-col space-y-4 text-lg font-medium">
+                          {navLinks.map((link) => (
+                          <Link
+                              key={link.href}
+                              href={link.href}
+                              className={`transition-colors hover:text-primary ${
+                                  pathname.startsWith(link.href)
+                                  ? 'text-primary'
+                                  : 'text-foreground/80'
+                              }`}
+                          >
+                              {link.label}
+                          </Link>
+                          ))}
+                      </div>
+                    )}
                     <div className="mt-auto flex flex-col space-y-2">
                         <Button asChild variant="outline">
                             <Link href="/login">Login</Link>
