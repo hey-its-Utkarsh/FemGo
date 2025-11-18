@@ -33,6 +33,12 @@ const nextConfig: NextConfig = {
         hostname: 'xsgames.co',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'static.vecteezy.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
