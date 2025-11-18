@@ -26,8 +26,8 @@ let usedRequestIndices = new Set<number>();
 
 const getPassengerDetails = (passengerId: string) => {
     const passenger = usersData.find(user => user.id === passengerId);
-    // Add a random ride count for simulation
-    const rideCount = Math.floor(Math.random() * 50) + 1;
+    // Set ride count to 1 for all passengers
+    const rideCount = 1;
     return passenger ? { ...passenger, rideCount } : { name: "Unknown Passenger", id: "unknown", phone: "N/A", verificationStatus: "unverified", rideCount: 0 };
 };
 
@@ -304,7 +304,7 @@ export default function DriverDashboard() {
                                                     </span>
                                                 )}
                                                 <span>•</span>
-                                                <span>{passenger.rideCount} Rides</span>
+                                                <span>{passenger.rideCount} Ride</span>
                                             </div>
                                         </div>
                                     </div>
@@ -364,12 +364,12 @@ export default function DriverDashboard() {
                         <span>Home</span>
                     </Button>
                 </Link>
-                <Link href="#completed" passHref>
+                <a href="#completed">
                     <Button variant="ghost" className="flex-col h-16 w-full text-muted-foreground">
                         <CheckCircle/>
                         <span>Rides</span>
                     </Button>
-                </Link>
+                </a>
                 <Link href="/driver/safety" passHref>
                     <Button variant="ghost" className="flex-col h-16 w-full text-red-500">
                         <AlertTriangle/>
